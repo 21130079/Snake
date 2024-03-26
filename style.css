@@ -1,0 +1,96 @@
+html {
+  display: flex;
+  justify-content: center;
+  background-color: #0d1117;
+  font-family: sans-serif;
+}
+html #map {
+  width: 500px;
+  height: 500px;
+  border: 1px solid white;
+  background-color: #2b3440;
+}
+html #map, html #map td {
+  border-collapse: collapse;
+}
+html #map .snake {
+  background-color: #6ad16e;
+}
+html #map .food {
+  background-color: #d1ac7e;
+}
+html #map .snake-head {
+  background-color: #1e522e;
+}
+html #map .wall {
+  background-color: #822b22;
+}
+html #map .mine {
+  animation: mineBlinking 1s infinite;
+}
+@keyframes mineBlinking {
+  0% {
+    background-color: red;
+  }
+  100% {
+    background-color: #2b3440;
+  }
+}
+html #map .smoke {
+  animation: smokeBlinking 1s infinite;
+}
+@keyframes smokeBlinking {
+  0% {
+    background-color: #2b3440;
+  }
+  100% {
+    background-color: #c4cddb;
+  }
+}
+html #info {
+  width: 500px;
+  height: 100px;
+  border-collapse: collapse;
+}
+html #info #score {
+  width: 100px;
+  font-size: 50px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #1c2128;
+  border: 1px solid white;
+  color: white;
+}
+html #info #score p {
+  font-size: 15px;
+  text-align: center;
+  line-height: 0;
+}
+html #info #instruct {
+  background-color: #1c2128;
+  border: 1px solid white;
+  color: white;
+}
+html #info #instruct #title {
+  font-size: 15px;
+  text-align: center;
+  line-height: 0;
+}
+html #info #instruct #content {
+  padding-left: 150px;
+  font-size: 15px;
+  line-height: 5px;
+}
+html #level {
+  padding-top: 15px;
+  width: 500px;
+}
+html #level td {
+  text-align: center;
+}
+html #level td button {
+  width: 70px;
+  height: 30px;
+  border-radius: 100px;
+  font-weight: bold;
+}/*# sourceMappingURL=style.css.map */
