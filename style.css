@@ -1,12 +1,56 @@
+@keyframes mineBlinking {
+  0% {
+    background-color: red;
+  }
+  100% {
+    background-color: #2b3440;
+  }
+}
+@keyframes smokeBlinking {
+  0% {
+    background-color: #2b3440;
+  }
+  100% {
+    background-color: #939393;
+  }
+}
 html {
   display: flex;
   justify-content: center;
   background-color: #0d1117;
   font-family: sans-serif;
 }
+html .pause-button {
+  left: 1050px;
+  top: 10px;
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 50px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #6381af;
+  border: none;
+}
+html .reload-button {
+  left: 1050px;
+  top: 100px;
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 50px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #6381af;
+  border: none;
+}
 html #map {
-  width: 500px;
-  height: 500px;
+  width: 520px;
+  opacity: 0.5;
+  transition: 0.5s;
+  height: 520px;
   border: 1px solid white;
   background-color: #2b3440;
 }
@@ -25,31 +69,18 @@ html #map .snake-head {
 html #map .wall {
   background-color: #822b22;
 }
+html #map .obstacle {
+  background-color: #90993d;
+}
 html #map .mine {
   animation: mineBlinking 1s infinite;
 }
-@keyframes mineBlinking {
-  0% {
-    background-color: red;
-  }
-  100% {
-    background-color: #2b3440;
-  }
-}
 html #map .smoke {
-  animation: smokeBlinking 1s infinite;
-}
-@keyframes smokeBlinking {
-  0% {
-    background-color: #2b3440;
-  }
-  100% {
-    background-color: #c4cddb;
-  }
+  animation: smokeBlinking 0.5s infinite;
 }
 html #info {
-  width: 500px;
-  height: 100px;
+  width: 520px;
+  height: 130px;
   border-collapse: collapse;
 }
 html #info #score {
@@ -77,20 +108,60 @@ html #info #instruct #title {
   line-height: 0;
 }
 html #info #instruct #content {
-  padding-left: 150px;
+  width: 100%;
+}
+html #info #instruct #content .move-content {
+  float: left;
+  width: 30%;
+  padding-left: 5%;
   font-size: 15px;
   line-height: 5px;
 }
+html #info #instruct #content .obstacle-content {
+  float: left;
+  width: 65%;
+  font-size: 15px;
+  line-height: 5px;
+}
+html #info #instruct #content .obstacle-content .obstacle-content-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 8px;
+}
+html #info #instruct #content .obstacle-content .obstacle-content-item .obstacle-content-color {
+  width: 5%;
+  width: 13px;
+  height: 13px;
+}
+html #info #instruct #content .obstacle-content .obstacle-content-item .obstacle-content-notice {
+  width: 95%;
+}
+html #info #instruct #content .obstacle-content .obstacle-content-item .wall {
+  background-color: #822b22;
+}
+html #info #instruct #content .obstacle-content .obstacle-content-item .mine {
+  animation: mineBlinking 1s infinite;
+}
+html #info #instruct #content .obstacle-content .obstacle-content-item .smoke {
+  animation: smokeBlinking 0.5s infinite;
+}
+html #info #instruct #content .obstacle-content .obstacle-content-item .food {
+  background-color: #d1ac7e;
+}
+html #info #instruct #content .obstacle-content .obstacle-content-item .obstacle {
+  background-color: #90993d;
+}
 html #level {
-  padding-top: 15px;
-  width: 500px;
+  padding-top: 5px;
+  width: 520px;
 }
 html #level td {
   text-align: center;
 }
 html #level td button {
   width: 70px;
-  height: 30px;
+  height: 25px;
   border-radius: 100px;
   font-weight: bold;
 }/*# sourceMappingURL=style.css.map */

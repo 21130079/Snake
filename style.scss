@@ -5,7 +5,28 @@ $foodColor: #d1ac7e;
 $snakeHeadColor: #1e522e;
 $transcriptBackgroundColor: #1c2128;
 $wallColor: #822b22;
-$smokeColor: #232427;
+$obstacleColor: #90993d;
+$smokeColor: #939393;
+$buttonsColor: #6381af;
+
+@keyframes mineBlinking {
+    0% {
+        background-color: red;
+    }
+    
+    100% {
+        background-color: $gameBackgroundColor;
+    }
+}
+
+@keyframes smokeBlinking {
+    0% {
+        background-color: $gameBackgroundColor;
+    }
+    100% {
+        background-color: $smokeColor;
+    }
+}
 
 html {
     display: flex;
@@ -13,9 +34,39 @@ html {
     background-color: $mainBackgroundColor;
     font-family: sans-serif;
 
+    .pause-button {
+        left: 1050px;
+        top: 10px;
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        border-radius: 100px;
+        font-size: 50px;
+        text-align: center;
+        vertical-align: middle;
+        background-color: $buttonsColor;
+        border: none;
+    }
+
+    .reload-button {
+        left: 1050px;
+        top: 100px;
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        border-radius: 100px;
+        font-size: 50px;
+        text-align: center;
+        vertical-align: middle;
+        background-color: $buttonsColor;
+        border: none;
+    }
+
     #map {
-        width: 500px;
-        height: 500px;
+        width: 520px;
+        opacity: 0.5;
+        transition: 0.5s;
+        height: 520px;
         border: 1px solid white;
         background-color: $gameBackgroundColor;
 
@@ -40,37 +91,23 @@ html {
             background-color: $wallColor;
         }
 
-        .mine {
-            animation: mineBlinking 1s infinite;
+        .obstacle {
+            background-color: $obstacleColor;
         }
 
-        @keyframes mineBlinking {
-            0% {
-                background-color: red;
-            }
+        .mine {
+            animation: mineBlinking 1s infinite;
 
-            100% {
-                background-color: $gameBackgroundColor;
-            }
         }
 
         .smoke {
             animation: smokeBlinking 0.5s infinite;
         }
-        
-        @keyframes smokeBlinking {
-            0% {
-                background-color: $gameBackgroundColor;
-            }
-            100% {
-                background-color: $smokeColor;
-            }
-        }
     }
 
     #info {
-        width: 500px;
-        height: 100px;
+        width: 520px;
+        height: 130px;
         border-collapse: collapse;
 
         #score {
@@ -101,23 +138,74 @@ html {
             }
 
             #content{
-                padding-left: 150px;
-                font-size: 15px;
-                line-height: 5px;
+                width: 100%;
+
+                .move-content {
+                    float: left;
+                    width: 30%;
+                    padding-left: 5%;
+                    font-size: 15px;
+                    line-height: 5px;
+                }
+
+                .obstacle-content {
+                    float: left;
+                    width: 65%;
+                    // padding-left: 10%;
+                    font-size: 15px;
+                    line-height: 5px;
+
+                    .obstacle-content-item {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        padding-top: 8px;
+
+                        .obstacle-content-color {
+                            width: 5%;
+                            width: 13px;
+                            height: 13px;
+                        }
+                        
+                        .obstacle-content-notice {
+                            width: 95%;
+                        }
+
+                        .wall {
+                            background-color: $wallColor;
+                        }
+
+                        .mine {
+                            animation: mineBlinking 1s infinite;
+                        }
+                
+                        .smoke {
+                            animation: smokeBlinking 0.5s infinite;
+                        }
+
+                        .food {
+                            background-color: $foodColor;
+                        }
+
+                        .obstacle {
+                            background-color: $obstacleColor;
+                        }
+                    }
+                }
             }
         }
     }
 
     #level {
-        padding-top: 15px;
-        width: 500px;
+        padding-top: 5px;
+        width: 520px;
 
         td {
             text-align: center;
 
             button {
                 width: 70px;
-                height: 30px;
+                height: 25px;
                 border-radius: 100px;
                 font-weight: bold;
             }
