@@ -20,6 +20,12 @@ html {
   background-color: #0d1117;
   font-family: sans-serif;
 }
+html .start-label {
+  position: absolute;
+  left: 580px;
+  top: 215px;
+  color: white;
+}
 html .pause-button {
   left: 1050px;
   top: 10px;
@@ -31,7 +37,13 @@ html .pause-button {
   text-align: center;
   vertical-align: middle;
   background-color: #6381af;
+  color: white;
   border: none;
+  transition: 0.2s;
+}
+html .pause-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
 }
 html .reload-button {
   left: 1050px;
@@ -44,7 +56,13 @@ html .reload-button {
   text-align: center;
   vertical-align: middle;
   background-color: #6381af;
+  color: white;
   border: none;
+  transition: 0.2s;
+}
+html .reload-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
 }
 html #map {
   width: 520px;

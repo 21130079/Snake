@@ -34,6 +34,13 @@ html {
     background-color: $mainBackgroundColor;
     font-family: sans-serif;
 
+    .start-label {
+        position: absolute;
+        left: 580px;
+        top: 215px;
+        color: white;
+    }
+
     .pause-button {
         left: 1050px;
         top: 10px;
@@ -45,7 +52,15 @@ html {
         text-align: center;
         vertical-align: middle;
         background-color: $buttonsColor;
+        color: white;
         border: none;
+        transition: 0.2s;
+        
+        &:hover {
+            background-color: $buttonsColor;
+            box-shadow: 0 0 5px $buttonsColor, 0 0 25px $buttonsColor, 0 0 5px $buttonsColor,
+            0 0 10px $buttonsColor;
+        }
     }
 
     .reload-button {
@@ -59,7 +74,15 @@ html {
         text-align: center;
         vertical-align: middle;
         background-color: $buttonsColor;
+        color: white;
         border: none;
+        transition: 0.2s;
+        
+        &:hover {
+            background-color: $buttonsColor;
+            box-shadow: 0 0 5px $buttonsColor, 0 0 25px $buttonsColor, 0 0 5px $buttonsColor,
+            0 0 10px $buttonsColor;
+        }
     }
 
     #map {

@@ -1,6 +1,7 @@
 let currentLevel = parseInt(localStorage.getItem('level'));
 let snakeTimer;
 let obstacleTimer;
+let mineTimer;
 let isSnakeRunning = false;
 
 console.log(currentLevel);
@@ -180,11 +181,18 @@ document.addEventListener('keydown', function (e) {
         currentDir = snakeDir['right'];
         map.css({'opacity': '1'});
         $('.pause-button').html('<b>II</b>');
+        $('.start-label').css({'display': 'none'})
 
         if (currentLevel == 5) {
             obstacleTimer = setInterval(function () {
                 moveObstacle();
             }, 200);
+        }
+
+        if (currentLevel == 6) {
+            mineTimer = setInterval(function () {
+                blastingMine();
+            }, 100);
         }
     }
 
@@ -267,11 +275,11 @@ function createTranscript() {
             instructContent += '<div class="obstacle-content">';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color wall"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Touch to die !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Do not touch)</div>';
             instructContent += '</div>';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color food"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win)</div>';
             instructContent += '</div>';
             instructContent += '</div>';
 
@@ -289,11 +297,11 @@ function createTranscript() {
             instructContent += '<div class="obstacle-content">';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color wall"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Touch to die !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Do not touch)</div>';
             instructContent += '</div>';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color food"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win)</div>';
             instructContent += '</div>';
             instructContent += '</div>';
 
@@ -311,11 +319,11 @@ function createTranscript() {
             instructContent += '<div class="obstacle-content">';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color wall"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Touch to die !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Do not touch)</div>';
             instructContent += '</div>';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color food"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win)</div>';
             instructContent += '</div>';
             instructContent += '</div>';
 
@@ -333,11 +341,11 @@ function createTranscript() {
             instructContent += '<div class="obstacle-content">';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color wall"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Touch to die !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Do not touch)</div>';
             instructContent += '</div>';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color food"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win)</div>';
             instructContent += '</div>';
             instructContent += '</div>';
 
@@ -355,15 +363,15 @@ function createTranscript() {
             instructContent += '<div class="obstacle-content">';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color wall"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Touch to die !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Do not touch)</div>';
             instructContent += '</div>';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color food"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win)</div>';
             instructContent += '</div>';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color obstacle"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Obstacle(Try to dodge !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Obstacle(Try to dodge)</div>';
             instructContent += '</div>';
             instructContent += '</div>';
 
@@ -381,11 +389,11 @@ function createTranscript() {
             instructContent += '<div class="obstacle-content">';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color wall"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Touch to die !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Wall(Do not touch)</div>';
             instructContent += '</div>';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color food"></div>';
-            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win !)</div>';
+            instructContent += '<div class="obstacle-content-notice">&nbsp;: Food(Eat to win)</div>';
             instructContent += '</div>';
             instructContent += '<div class="obstacle-content-item">';
             instructContent += '<div class="obstacle-content-color mine"></div>';
@@ -732,9 +740,6 @@ $(document).ready(function () {
             canThroughWall = true;
             createMap();
             createWall();
-            setInterval(function () {
-                blastingMine();
-            }, 100);
             createFood();
             createTranscript();
 
@@ -780,11 +785,18 @@ function onPause() {
         map.css({'opacity': '1'});
         $('.pause-button').html('<b>II</b>');
         isSnakeRunning = true;
+        $('.start-label').css({'display': 'none'})
 
         if (currentLevel == 5) {
             obstacleTimer = setInterval(function () {
                 moveObstacle();
             }, 200);
+        }
+
+        if (currentLevel == 6) {
+            mineTimer = setInterval(function () {
+                blastingMine();
+            }, 100);
         }
     } else if (isSnakeRunning) {
         clearInterval(snakeTimer);
@@ -805,6 +817,12 @@ function onPause() {
                 moveObstacle();
             }, 200);
         }
+
+        if (currentLevel == 6) {
+            mineTimer = setInterval(function () {
+                blastingMine();
+            }, 100);
+        }
     }
 }
 
@@ -818,6 +836,10 @@ function endGame() {
     isSnakeRunning = false;
     $('.pause-button').html('<b>II</b>');
     map.css({'opacity': '0.5'});
-    $('.reload-button').css({'left': '720px', 'top': '220px', 'transition': '1s'});
+    $('.reload-button').css({'left': '720px', 'top': '220px'});
     $('.pause-button').attr('disabled','disabled');
+    $('.pause-button').css({'opacity': '0.5'});
+    $('.pause-button').hover(function(){
+        $(this).css({'box-shadow': 'none'});
+    });
 }
