@@ -36,7 +36,7 @@ html {
 }
 html .start-label {
   position: absolute;
-  top: 250px;
+  top: 265px;
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
@@ -58,7 +58,10 @@ html #map {
   transition: 0.5s;
   height: 520px;
   border: 1px solid white;
-  background-color: #2b3440;
+  background-image: url("./img/center-background.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 html #map, html #map td {
   border-collapse: collapse;

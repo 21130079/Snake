@@ -1,92 +1,111 @@
-let currentLevel = parseInt(localStorage.getItem('level'));
-
-if (isNaN(currentLevel)) {
-    currentLevel = 1;
-}
-
-let snakeTimer;
-let obstacleTimer;
-let mineTimer;
-let isSnakeRunning = false;
-
+//bản đồ
 let map = $('#map');
 let mapSize = 40;
 
-let snakePos = {
-    'row': Math.trunc(mapSize / 2),
-    'col': Math.trunc(mapSize / 3)
-};
-let snakePosElement;
+//cấp độ
+let currentLevel = parseInt(localStorage.getItem('level'));
 
+//rắn
 let snakeDir = {
     'left': 1,
     'right': 2,
     'up': 3,
     'down': 4
 };
+let snakePos = {
+    'row': Math.trunc(mapSize / 2),
+    'col': Math.trunc(mapSize / 3)
+};
 let currentDir;
-
+let snakePosElement;
 let snakeBody = 0;
 let snakeTailElement;
 let snakeHeadElement;
 let snakeLength = 5;
-
+let snakePoint = 0;
 let isMoved;
+let isSnakeRunning = false;
+let canThroughWall = true;
+let reverseSnakeDir = false;
 
+//thức ăn
 let foodRow;
 let foodCol;
 let foodElement;
 let foodCount = 0;
 
-let snakePoint = 0;
-
+//bảng điểm và hướng dẫn
 let scoreArea;
 let instructArea;
 
-let hasWall;
-let canThroughWall = true;
-let reverseSnakeDir = false;
-
-let reverseTopObstacleDir = false;
-let reverseBottomObstacleDir = true;
+//chướng ngại vật
 let obstacleSize = 5;
+//chướng ngại vật trên
 let topObstacleStartCol = Math.trunc((mapSize - obstacleSize) / 2) + 1;
 let topObstacleEndCol = Math.trunc((mapSize - obstacleSize) / 2) + obstacleSize + 1;
 let topObstacleStartRow = Math.trunc((mapSize - obstacleSize) / 3) + 1;
 let topObstacleEndRow = Math.trunc((mapSize - obstacleSize) / 3) + obstacleSize + 1;
+let reverseTopObstacleDir = false;
 
+//chướng ngại vật dưới
 let bottomObstacleStartCol = Math.trunc((mapSize - obstacleSize) / 2) + 1;
 let bottomObstacleEndCol = Math.trunc((mapSize - obstacleSize) / 2) + obstacleSize + 1;
 let bottomObstacleStartRow = Math.trunc((mapSize - obstacleSize) / 3) * 2 + 1;
 let bottomObstacleEndRow = Math.trunc((mapSize - obstacleSize) / 3) * 2 + obstacleSize + 1;
+let reverseBottomObstacleDir = true;
 
+//mìn
 let time = 0;
 let mineRow;
 let mineCol;
 let mineElement;
 let mineRoundTime = 5;
 
+//nút dừng
 let pauseButton = $('.pause-button');
 let pauseContent = $('.pause-content');
 
-let reloadButton = $('.reload-button');
-let reloadContent = $('.reload-content');
-
+//chế độ trò chơi
 let mode = 'normal';
 let modeButton = $('.mode-button');
 let modeContent = $('.mode-content');
 
+//nút tải lại trang
+let reloadButton = $('.reload-button');
+let reloadContent = $('.reload-content');
+
+//nút chuyển cấp độ
 let nextButton = $('.next-button');
 let nextContent = $('.next-content');
 
+//nút âm thanh
 let soundButton = $('.sound-button');
 let soundContent = $('.sound-content');
+let isSoundPlaying = true;
 
+//nút nhạc nền
 let musicButton = $('.music-button');
 let musicContent = $('.music-content');
-
-let isSoundPlaying = true;
 let isMusicPlaying = true;
+
+//thời gian được tính toán
+let snakeTimer;
+let obstacleTimer;
+let mineTimer;
+
+//chọn cấp độ khởi đầu
+if (isNaN(currentLevel)) {
+    currentLevel = 1;
+}
+
+//âm thanh
+let snakeSoundElement = $('.snake-sound')[0];
+let mineSoundElement = $('.mine-sound')[0];
+let loseSoundElement = $('.lose-sound')[0];
+let wonSoundElement = $('.won-sound')[0];
+let eatSoundElement = $('.eat-sound')[0];
+snakeSoundElement.volume = loseSoundElement.volume = 0.3;
+mineSoundElement.volume = wonSoundElement.volume = eatSoundElement.volume = 0.7;
 
 function createMap() {
     // tạo hàng
@@ -103,6 +122,7 @@ function createMap() {
 function createSnake() {
     snakeBody += 1;
     
+    //điều kiện cho từng hướng di chuyển
     switch (currentDir) {
         case 1:
             snakePos['col'] -= 1;
@@ -181,6 +201,7 @@ function createSnake() {
 
     //lấy ra đuôi của rắn
     snakeTailElement = $(`.snake-body-${snakeBody - snakeLength}`);
+
     //xóa đuôi khi quá kích thước
     snakeTailElement.removeClass(`snake snake-body-${snakeBody - snakeLength}`);
 
@@ -189,6 +210,7 @@ function createSnake() {
     //lấy đầu của rắn
     snakeHeadElement = $(`.snake-body-${snakeBody}`);
     snakeHeadElement.addClass('snake-head')
+
     //bỏ đầu cũ của rắn
     if (snakeBody > 1) {
         oldSnakeHead = $(`.snake-body-${snakeBody - 1}`);
@@ -196,29 +218,7 @@ function createSnake() {
     }
 
     //ăn thức ăn
-    if (snakePos['row'] == foodRow && snakePos['col'] == foodCol) {
-        if (isSoundPlaying) {
-            $('.eat-sound')[0].play();
-        }
-        snakeLength += 1;
-        if (foodCount == 5) {
-            snakePoint += 5;
-            foodElement.removeClass('special-food');
-            foodCount = 0;
-        } else {
-            snakePoint += 1;
-            foodElement.removeClass('food');
-            foodCount += 1;
-        }
-        
-        //cập nhật bảng điểm
-        if (mode == 'normal') {            
-            scoreArea.html(`<p>Score:</p>${snakePoint}/30`);
-        } else {
-            scoreArea.html(`<p>Score:</p>${snakePoint}`);
-        }
-        createFood();
-    }
+    updateFood();
 
     //kiểm tra điểm để qua màn
     if (mode == 'normal') {
@@ -232,9 +232,10 @@ function createSnake() {
 document.addEventListener('keydown', function (e) {
     //đã di chuyển mới được đổi hướng
     if (currentDir == 0) {
-        $('.snake-sound')[0].play();
         musicButton.html('<i class="fa-solid fa-music"></i>');
         isMusicPlaying = true;
+        
+        snakeSoundElement.play();
         currentDir = snakeDir['right'];
         map.css({ 'opacity': '1' });
         pauseButton.html('<i class="fa-solid fa-pause"></i>');
@@ -300,14 +301,8 @@ document.addEventListener('keydown', function (e) {
 });
 
 function createFood() {
-    if (hasWall) {
-        foodRow = Math.floor(Math.random() * (mapSize - 2)) + 2;
-        foodCol = Math.floor(Math.random() * (mapSize - 2)) + 2;
-    } else {
-        foodRow = Math.floor(Math.random() * mapSize) + 1;
-        foodCol = Math.floor(Math.random() * mapSize) + 1;
-    }
-    
+    foodRow = Math.floor(Math.random() * mapSize) + 1;
+    foodCol = Math.floor(Math.random() * mapSize) + 1;
     foodElement = $(`.row-${foodRow}-col-${foodCol}`);
     
     while (foodElement.hasClass('snake') || foodElement.hasClass('wall')) {
@@ -319,7 +314,33 @@ function createFood() {
     } else {
         foodElement.addClass('food');
     }
-    
+}
+
+function updateFood() {
+    //kiểm tra rắn đến chỗ thức ăn
+    if (snakePos['row'] == foodRow && snakePos['col'] == foodCol) {
+        if (isSoundPlaying) {
+            eatSoundElement.play();
+        }
+        snakeLength += 1;
+        if (foodCount == 5) {
+            snakePoint += 5;
+            foodElement.removeClass('special-food');
+            foodCount = 0;
+        } else {
+            snakePoint += 1;
+            foodElement.removeClass('food');
+            foodCount += 1;
+        }
+        
+        //cập nhật bảng điểm
+        if (mode == 'normal') {            
+            scoreArea.html(`<p><b>Score:</b></p>${snakePoint}/30`);
+        } else {
+            scoreArea.html(`<p><b>Score:</b></p>${snakePoint}`);
+        }
+        createFood();
+    }
 }
 
 function createTranscript() {
@@ -475,19 +496,18 @@ function createTranscript() {
             break;
     }
 
-    //bảng điểm
+    //thêm thông tin bảng điểm
     infoTable.append('<td id="score"></td>');
     scoreArea = $('#score');
     scoreArea.html(`<p><b>Score:</b></p>${snakePoint}/30`);
 
-    //bảng hướng dẫn
+    //thêm thông tin bảng hướng dẫn
     infoTable.append('<td id="instruct"></td>');
     instructArea = $('#instruct');
     instructArea.html(instructTitle + instructContent);
 }
 
 function createWall() {
-    hasWall = true;
     let wallFlexPos;
 
     //tạo tường bên trái
@@ -659,6 +679,7 @@ function blastingMine() {
 
     if (time % 10 == 0) {
         //thả mìn
+        mineSoundElement.play();
         for (let i = mineRow - 2; i <= mineRow + 2; i++) {
             for (let j = mineCol - 2; j <= mineCol + 2; j++) {
                 $(`.row-${i}-col-${j}`).addClass('wall');
@@ -801,7 +822,7 @@ function setLevel(level) {
 
 pauseButton.click(function () {
     if (currentDir == 0) {
-        $('.snake-sound')[0].play();
+        snakeSoundElement.play();
         musicButton.html('<i class="fa-solid fa-music"></i>');
         isMusicPlaying = true;
         map.css({ 'opacity': '1' });
@@ -830,6 +851,7 @@ pauseButton.click(function () {
     } else if (isSnakeRunning) {
         clearInterval(snakeTimer);
         clearInterval(obstacleTimer);
+        clearInterval(mineTimer);
         isSnakeRunning = false;
         pauseButton.html('<i class="fa-solid fa-play"></i>');
         pauseContent.html('Resume');
@@ -895,10 +917,10 @@ soundButton.click(function () {
 musicButton.click(function () {
     if (isMusicPlaying) {
         musicButton.html('<i class="fa-solid fa-microphone-slash"></i>');
-        $('.snake-sound')[0].pause();
+        snakeSoundElement.pause();
     } else {
         musicButton.html('<i class="fa-solid fa-music"></i>');
-        $('.snake-sound')[0].play();
+        snakeSoundElement.play();
     }
     isMusicPlaying = !isMusicPlaying;
 });
@@ -906,11 +928,12 @@ musicButton.click(function () {
 function endGame() {
     clearInterval(snakeTimer);
     clearInterval(obstacleTimer);
+    clearInterval(mineTimer);
     if (isSoundPlaying) {
-        $('.lose-sound')[0].play();
+        loseSoundElement.play();
     }
     isSnakeRunning = false;
-    map.css({ 'opacity': '0.5' });
+    map.css({ 'opacity': '1', 'filter': 'blur(2px)'});
     pauseButton.html('<b>II</b>');
     $('.reload').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
     pauseButton.attr('disabled', 'disabled');
@@ -919,14 +942,15 @@ function endGame() {
         $(this).css({ 'box-shadow': 'none' });
     });
     $('.lose-label').css({ 'display': 'block' });
-    $('.snake-sound')[0].pause();
+    snakeSoundElement.pause();
 }
 
 function nextLevel() {
     clearInterval(snakeTimer);
     clearInterval(obstacleTimer);
+    clearInterval(mineTimer);
     if (isSoundPlaying) {
-        $('.won-sound')[0].play();
+        wonSoundElement.play();
     }
     isSnakeRunning = false;
     map.css({ 'opacity': '0.5' });
