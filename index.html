@@ -5,14 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake</title>
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
+    <table id="level"></table>
     <table id="map"></table>
     <table id="info"></table>
-    <table id="level"></table>
-    <button class="pause-button" onclick="onPause()">&#9654;</button>
-    <button class="reload-button" onclick="reload()">&#10227;</button>
+
+    <div class="pause">
+        <button class="pause-button"><i class="fa-solid fa-play"></i></button>
+        <p class="pause-content">Start</p>
+    </div>
+
+    <div class="mode">
+        <button class="mode-button">Normal</button>
+        <p class="mode-content">Mode</p>
+    </div>
+
+    <div class="reload">
+        <button class="reload-button"><i class="fa-solid fa-rotate-right"></i></button>
+        <p class="reload-content">Reload</p>
+    </div>
+
+    <div class="next">
+        <button class="next-button"><i class="fa-solid fa-right-long"></i></button>
+        <p class="next-content">Next Level</p>
+    </div>
+
+    <div class="sound">
+        <button class="sound-button"><i class="fa-solid fa-volume-high"></i></button>
+        <p class="sound-content">Sound</p>
+    </div>
+
+    <div class="music">
+        <button class="music-button"><i class="fa-solid fa-music"></i></button>
+        <p class="music-content">Music</p>
+    </div>
+
     <h1 class="start-label">Press Any Key To Start !</h1>
+    <h1 class="won-label">You won !</h1>
+    <h1 class="lose-label">You lose !</h1>
+
+    <audio class="snake-sound" preload="auto" loop autoplay src="./audio/snake-sound.mp3"></audio>
+    <audio class="eat-sound" preload="auto" src="./audio/eat-sound.mp3"></audio>
+    <audio class="lose-sound" preload="auto" src="./audio/lose-sound.mp3"></audio>
+    <audio class="won-sound" preload="auto" src="./audio/won-sound.mp3"></audio>
+    <audio class="mine-sound" preload="auto" src="./audio/mine-sound.mp3"></audio>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="./main.js"></script>

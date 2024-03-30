@@ -1,3 +1,11 @@
+@keyframes foodBlinking {
+  0% {
+    background-color: red;
+  }
+  100% {
+    background-color: #6381af;
+  }
+}
 @keyframes mineBlinking {
   0% {
     background-color: red;
@@ -17,52 +25,32 @@
 html {
   display: flex;
   justify-content: center;
-  background-color: #0d1117;
   font-family: sans-serif;
+  background-image: url("./img/background.png");
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
 }
 html .start-label {
   position: absolute;
-  left: 580px;
-  top: 215px;
+  top: 250px;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: white;
-}
-html .pause-button {
-  left: 1050px;
-  top: 10px;
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  border-radius: 100px;
-  font-size: 50px;
-  text-align: center;
-  vertical-align: middle;
-  background-color: #6381af;
-  color: white;
-  border: none;
   transition: 0.2s;
 }
-html .pause-button:hover {
-  background-color: #6381af;
-  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
-}
-html .reload-button {
-  left: 1050px;
-  top: 100px;
+html .won-label,
+html .lose-label {
   position: absolute;
-  width: 80px;
-  height: 80px;
-  border-radius: 100px;
-  font-size: 50px;
-  text-align: center;
-  vertical-align: middle;
-  background-color: #6381af;
+  top: 180px;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: white;
-  border: none;
   transition: 0.2s;
-}
-html .reload-button:hover {
-  background-color: #6381af;
-  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+  display: none;
 }
 html #map {
   width: 520px;
@@ -80,6 +68,9 @@ html #map .snake {
 }
 html #map .food {
   background-color: #d1ac7e;
+}
+html #map .special-food {
+  animation: foodBlinking 1s infinite;
 }
 html #map .snake-head {
   background-color: #1e522e;
@@ -103,7 +94,7 @@ html #info {
 }
 html #info #score {
   width: 100px;
-  font-size: 50px;
+  font-size: 40px;
   text-align: center;
   vertical-align: middle;
   background-color: #1c2128;
@@ -171,7 +162,8 @@ html #info #instruct #content .obstacle-content .obstacle-content-item .obstacle
   background-color: #90993d;
 }
 html #level {
-  padding-top: 5px;
+  margin-top: -5px;
+  margin-bottom: 5px;
   width: 520px;
 }
 html #level td {
@@ -182,4 +174,167 @@ html #level td button {
   height: 25px;
   border-radius: 100px;
   font-weight: bold;
+  border: none;
+  color: white;
+  background-color: #39a832;
+}
+html #level td button:hover {
+  background-color: #39a832;
+  box-shadow: 0 0 5px #39a832, 0 0 25px #39a832, 0 0 5px #39a832, 0 0 10px #39a832;
+}
+html .pause {
+  position: absolute;
+  left: 1050px;
+  top: 40px;
+  text-align: center;
+  vertical-align: middle;
+  transition: 0.2s;
+}
+html .pause .pause-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 40px;
+  color: white;
+  border: none;
+  background-color: #6381af;
+}
+html .pause .pause-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html .pause .pause-content {
+  line-height: 0px;
+  color: white;
+  font-size: 20px;
+}
+html .mode {
+  position: absolute;
+  left: 1050px;
+  top: 170px;
+  text-align: center;
+  vertical-align: middle;
+  transition: 0.2s;
+}
+html .mode .mode-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 20px;
+  color: white;
+  border: none;
+  background-color: #6381af;
+}
+html .mode .mode-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html .mode .mode-content {
+  line-height: 0px;
+  color: white;
+  font-size: 20px;
+}
+html .reload {
+  position: absolute;
+  left: 1050px;
+  top: 300px;
+  text-align: center;
+  vertical-align: middle;
+  transition: 0.2s;
+}
+html .reload .reload-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 40px;
+  color: white;
+  border: none;
+  background-color: #6381af;
+}
+html .reload .reload-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html .reload .reload-content {
+  line-height: 0px;
+  color: white;
+  font-size: 20px;
+}
+html .next {
+  position: absolute;
+  left: 1050px;
+  top: 430px;
+  text-align: center;
+  vertical-align: middle;
+  transition: 0.2s;
+}
+html .next .next-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 40px;
+  color: white;
+  border: none;
+  background-color: #6381af;
+}
+html .next .next-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html .next .next-content {
+  line-height: 0px;
+  color: white;
+  font-size: 20px;
+}
+html .sound {
+  position: absolute;
+  left: 400px;
+  top: 40px;
+  text-align: center;
+  vertical-align: middle;
+  transition: 0.2s;
+}
+html .sound .sound-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 40px;
+  color: white;
+  border: none;
+  background-color: #6381af;
+}
+html .sound .sound-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html .sound .sound-content {
+  line-height: 0px;
+  color: white;
+  font-size: 20px;
+}
+html .music {
+  position: absolute;
+  left: 400px;
+  top: 170px;
+  text-align: center;
+  vertical-align: middle;
+  transition: 0.2s;
+}
+html .music .music-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 40px;
+  color: white;
+  border: none;
+  background-color: #6381af;
+}
+html .music .music-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html .music .music-content {
+  line-height: 0px;
+  color: white;
+  font-size: 20px;
 }/*# sourceMappingURL=style.css.map */

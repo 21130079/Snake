@@ -1,13 +1,13 @@
 let currentLevel = parseInt(localStorage.getItem('level'));
+
+if (isNaN(currentLevel)) {
+    currentLevel = 1;
+}
+
 let snakeTimer;
 let obstacleTimer;
 let mineTimer;
 let isSnakeRunning = false;
-
-console.log(currentLevel);
-if (currentLevel == null) {
-    currentLevel = 1;
-}
 
 let map = $('#map');
 let mapSize = 40;
@@ -36,25 +36,57 @@ let isMoved;
 let foodRow;
 let foodCol;
 let foodElement;
+let foodCount = 0;
 
 let snakePoint = 0;
+
+let scoreArea;
+let instructArea;
 
 let hasWall;
 let canThroughWall = true;
 let reverseSnakeDir = false;
 
-let reverseObstacleDir = false;
-let obstacleSize = 16;
-let obstacleStartCol = Math.trunc((mapSize - obstacleSize) / 2) + 1;
-let obstacleEndCol = Math.trunc((mapSize - obstacleSize) / 2) + obstacleSize + 1;
-let obstacleStartRow = Math.trunc((mapSize - obstacleSize) / 2) + 1;
-let obstacleEndRow = Math.trunc((mapSize - obstacleSize) / 2) + obstacleSize + 1;
+let reverseTopObstacleDir = false;
+let reverseBottomObstacleDir = true;
+let obstacleSize = 5;
+let topObstacleStartCol = Math.trunc((mapSize - obstacleSize) / 2) + 1;
+let topObstacleEndCol = Math.trunc((mapSize - obstacleSize) / 2) + obstacleSize + 1;
+let topObstacleStartRow = Math.trunc((mapSize - obstacleSize) / 3) + 1;
+let topObstacleEndRow = Math.trunc((mapSize - obstacleSize) / 3) + obstacleSize + 1;
+
+let bottomObstacleStartCol = Math.trunc((mapSize - obstacleSize) / 2) + 1;
+let bottomObstacleEndCol = Math.trunc((mapSize - obstacleSize) / 2) + obstacleSize + 1;
+let bottomObstacleStartRow = Math.trunc((mapSize - obstacleSize) / 3) * 2 + 1;
+let bottomObstacleEndRow = Math.trunc((mapSize - obstacleSize) / 3) * 2 + obstacleSize + 1;
 
 let time = 0;
 let mineRow;
 let mineCol;
 let mineElement;
 let mineRoundTime = 5;
+
+let pauseButton = $('.pause-button');
+let pauseContent = $('.pause-content');
+
+let reloadButton = $('.reload-button');
+let reloadContent = $('.reload-content');
+
+let mode = 'normal';
+let modeButton = $('.mode-button');
+let modeContent = $('.mode-content');
+
+let nextButton = $('.next-button');
+let nextContent = $('.next-content');
+
+let soundButton = $('.sound-button');
+let soundContent = $('.sound-content');
+
+let musicButton = $('.music-button');
+let musicContent = $('.music-content');
+
+let isSoundPlaying = true;
+let isMusicPlaying = true;
 
 function createMap() {
     // tạo hàng
@@ -70,11 +102,11 @@ function createMap() {
 
 function createSnake() {
     snakeBody += 1;
-
+    
     switch (currentDir) {
         case 1:
             snakePos['col'] -= 1;
-
+            
             //đi xuyên tường
             if (snakePos['col'] < 1) {
                 if (canThroughWall) {
@@ -84,7 +116,7 @@ function createSnake() {
                     break;
                 }
             }
-            
+
             snakePosElement = $(`.row-${snakePos['row']}-col-${snakePos['col']}`);
 
             break;
@@ -134,15 +166,18 @@ function createSnake() {
             }
 
             snakePosElement = $(`.row-${snakePos['row']}-col-${snakePos['col']}`);
-            
+
             break;
-        }
+    }
 
     //tự cắn đuôi & đụng tường & dính khói & đụng chướng ngại vật
     if (snakePosElement.hasClass('snake') || snakePosElement.hasClass('wall') || snakePosElement.hasClass('smoke') || snakePosElement.hasClass('obstacle')) {
         endGame();
         return;
     }
+
+    //đã di chuyển
+    isMoved = true;
 
     //lấy ra đuôi của rắn
     snakeTailElement = $(`.snake-body-${snakeBody - snakeLength}`);
@@ -159,30 +194,56 @@ function createSnake() {
         oldSnakeHead = $(`.snake-body-${snakeBody - 1}`);
         oldSnakeHead.removeClass('snake-head');
     }
-    //đã di chuyển
-    isMoved = true;
 
     //ăn thức ăn
     if (snakePos['row'] == foodRow && snakePos['col'] == foodCol) {
-        snakePoint += 1;
+        if (isSoundPlaying) {
+            $('.eat-sound')[0].play();
+        }
         snakeLength += 1;
-        foodElement.removeClass('food');
-
+        if (foodCount == 5) {
+            snakePoint += 5;
+            foodElement.removeClass('special-food');
+            foodCount = 0;
+        } else {
+            snakePoint += 1;
+            foodElement.removeClass('food');
+            foodCount += 1;
+        }
+        
         //cập nhật bảng điểm
-        scoreArea = $('#score');
-        scoreArea.html(`<p>Score:</p>${snakePoint}`);
+        if (mode == 'normal') {            
+            scoreArea.html(`<p>Score:</p>${snakePoint}/30`);
+        } else {
+            scoreArea.html(`<p>Score:</p>${snakePoint}`);
+        }
         createFood();
+    }
+
+    //kiểm tra điểm để qua màn
+    if (mode == 'normal') {
+        if (snakePoint >= 30) {
+            nextLevel();
+            return;
+        }
     }
 }
 
 document.addEventListener('keydown', function (e) {
     //đã di chuyển mới được đổi hướng
     if (currentDir == 0) {
+        $('.snake-sound')[0].play();
+        musicButton.html('<i class="fa-solid fa-music"></i>');
+        isMusicPlaying = true;
         currentDir = snakeDir['right'];
-        map.css({'opacity': '1'});
-        $('.pause-button').html('<b>II</b>');
-        $('.start-label').css({'display': 'none'})
-
+        map.css({ 'opacity': '1' });
+        pauseButton.html('<i class="fa-solid fa-pause"></i>');
+        $('.start-label').hide();
+        modeButton.attr('disabled', 'disabled');
+        modeButton.hover(function () {
+            $(this).css({ 'box-shadow': 'none' });
+        });
+        $('.mode').css({ 'opacity': '0.5' });
         if (currentLevel == 5) {
             obstacleTimer = setInterval(function () {
                 moveObstacle();
@@ -246,22 +307,26 @@ function createFood() {
         foodRow = Math.floor(Math.random() * mapSize) + 1;
         foodCol = Math.floor(Math.random() * mapSize) + 1;
     }
-    console.log(foodRow, foodCol);
-
+    
     foodElement = $(`.row-${foodRow}-col-${foodCol}`);
-
+    
     while (foodElement.hasClass('snake') || foodElement.hasClass('wall')) {
         return createFood();
     }
-
-    foodElement.addClass('food');
+    
+    if (foodCount == 5) {
+        foodElement.addClass('special-food');
+    } else {
+        foodElement.addClass('food');
+    }
+    
 }
 
 function createTranscript() {
     let infoTable = $('#info');
     let instructTitle = '<div id="title"><p><b>Instruction:</b></p></div>';
     let instructContent = '<div id="content">';
-
+    
     //viết hướng dẫn
     switch (currentLevel) {
         case 1:
@@ -413,12 +478,12 @@ function createTranscript() {
     //bảng điểm
     infoTable.append('<td id="score"></td>');
     scoreArea = $('#score');
-    scoreArea.html(`<p><b>Score:</b></p>${snakePoint}`);
+    scoreArea.html(`<p><b>Score:</b></p>${snakePoint}/30`);
 
     //bảng hướng dẫn
     infoTable.append('<td id="instruct"></td>');
-    scoreArea = $('#instruct');
-    scoreArea.html(instructTitle + instructContent);
+    instructArea = $('#instruct');
+    instructArea.html(instructTitle + instructContent);
 }
 
 function createWall() {
@@ -451,56 +516,104 @@ function createWall() {
 }
 
 function createObstacle() {
-    for (let i = obstacleStartCol; i <= obstacleEndCol; i++) {
-        for (let j = obstacleStartCol; j <= obstacleEndCol; j++) {
+    for (let i = topObstacleStartRow; i <= topObstacleEndRow; i++) {
+        for (let j = topObstacleStartCol; j <= topObstacleEndCol; j++) {
             $(`.row-${i}-col-${j}`).addClass('obstacle');
         }
     }
-    obstacleStartCol -= 1;
+
+    for (let i = bottomObstacleStartRow; i <= bottomObstacleEndRow; i++) {
+        for (let j = bottomObstacleStartCol; j <= bottomObstacleEndCol; j++) {
+            $(`.row-${i}-col-${j}`).addClass('obstacle');
+        }
+    }
+
+    topObstacleStartCol -= 1;
+    bottomObstacleEndCol += 1;
 }
 
 function moveObstacle() {
-    if (obstacleStartCol <= 1) {
-        reverseObstacleDir = !reverseObstacleDir;
-        obstacleStartCol += 1;
-        obstacleEndCol += 1;
+    if (topObstacleStartCol <= 1) {
+        reverseTopObstacleDir = !reverseTopObstacleDir;
+        topObstacleStartCol += 1;
+        topObstacleEndCol += 1;
+        
+        //đổi thứ tự cột thêm và xóa để di chuyển ngược lại
+        let temp = topObstacleStartCol;
+        topObstacleStartCol = topObstacleEndCol;
+        topObstacleEndCol = temp;
+    } else if (topObstacleStartCol > mapSize - 1) {
+        reverseTopObstacleDir = !reverseTopObstacleDir;
+        topObstacleStartCol -= 1;
+        topObstacleEndCol -= 1;
 
         //đổi thứ tự cột thêm và xóa để di chuyển ngược lại
-        let temp = obstacleStartCol;
-        obstacleStartCol = obstacleEndCol;
-        obstacleEndCol = temp;
-    } else if (obstacleStartCol > mapSize - 1) {
-        reverseObstacleDir = !reverseObstacleDir;
-        obstacleStartCol -= 1;
-        obstacleEndCol -= 1;
+        let temp = topObstacleStartCol;
+        topObstacleStartCol = topObstacleEndCol;
+        topObstacleEndCol = temp;
+    }
+
+    if (bottomObstacleEndCol > mapSize - 1) {
+        reverseBottomObstacleDir = !reverseBottomObstacleDir;
+        bottomObstacleStartCol -= 1;
+        bottomObstacleEndCol -= 1;
 
         //đổi thứ tự cột thêm và xóa để di chuyển ngược lại
-        let temp = obstacleStartCol;
-        obstacleStartCol = obstacleEndCol;
-        obstacleEndCol = temp;
+        let temp = bottomObstacleStartCol;
+        bottomObstacleStartCol = bottomObstacleEndCol;
+        bottomObstacleEndCol = temp;
+    } else if (bottomObstacleEndCol <= 1) {
+        reverseBottomObstacleDir = !reverseBottomObstacleDir;
+        bottomObstacleStartCol += 1;
+        bottomObstacleEndCol += 1;
+
+        //đổi thứ tự cột thêm và xóa để di chuyển ngược lại
+        let temp = bottomObstacleStartCol;
+        bottomObstacleStartCol = bottomObstacleEndCol;
+        bottomObstacleEndCol = temp;
     }
 
     //kiểm tra chạm đuôi trước khi di chuyển
-    for (let i = obstacleStartRow; i <= obstacleEndRow; i++) {
-        if ($(`.row-${i}-col-${obstacleStartCol}`).hasClass('snake')) {
+    for (let i = topObstacleStartRow; i <= topObstacleEndRow; i++) {
+        if ($(`.row-${i}-col-${topObstacleStartCol}`).hasClass('snake')) {
+            endGame();
+            return;
+        }
+    }
+
+    for (let i = bottomObstacleStartRow; i <= bottomObstacleEndRow; i++) {
+        if ($(`.row-${i}-col-${bottomObstacleStartCol}`).hasClass('snake')) {
             endGame();
             return;
         }
     }
 
     //di chuyển chướng ngại vật
-    for (let i = obstacleStartRow; i <= obstacleEndRow; i++) {
-        $(`.row-${i}-col-${obstacleStartCol}`).addClass('obstacle');
-        $(`.row-${i}-col-${obstacleEndCol}`).removeClass('obstacle');
+    for (let i = topObstacleStartRow; i <= topObstacleEndRow; i++) {
+        $(`.row-${i}-col-${topObstacleStartCol}`).addClass('obstacle');
+        $(`.row-${i}-col-${topObstacleEndCol}`).removeClass('obstacle');
     }
 
-    //cột tiếp di chuyển theo của rắn
-    if (reverseObstacleDir) {
-        obstacleStartCol += 1;
-        obstacleEndCol += 1;
+    for (let i = bottomObstacleStartRow; i <= bottomObstacleEndRow; i++) {
+        $(`.row-${i}-col-${bottomObstacleStartCol}`).removeClass('obstacle');
+        $(`.row-${i}-col-${bottomObstacleEndCol}`).addClass('obstacle');
+    }
+
+    //cột di chuyển tiếp theo của chướng ngại vật
+    if (reverseTopObstacleDir) {
+        topObstacleStartCol += 1;
+        topObstacleEndCol += 1;
     } else {
-        obstacleStartCol -= 1;
-        obstacleEndCol -= 1;
+        topObstacleStartCol -= 1;
+        topObstacleEndCol -= 1;
+    }
+    
+    if (reverseBottomObstacleDir) {
+        bottomObstacleStartCol += 1;
+        bottomObstacleEndCol += 1;
+    } else {
+        bottomObstacleStartCol -= 1;
+        bottomObstacleEndCol -= 1;
     }
 }
 
@@ -528,7 +641,6 @@ function checkMineNotInFood(mineElement) {
         for (let j = mineCol - 2; j <= mineCol + 2; j++) {
             if ($(`.row-${i}-col-${j}`).hasClass('food')) {
                 result = false;
-                console.log(result);
             }
         }
     }
@@ -644,7 +756,6 @@ function createTerrain() {
     for (let i = terrainCornerSize * 4; i > terrainCornerSize * 3; i--) {
         terrainFlexPos = `row-${i}-col-${terrainCornerSize}`;
         $(`.${terrainFlexPos}`).addClass('wall');
-        console.log(terrainFlexPos);
     }
 
     //tạo địa hình góc phải dưới
@@ -680,97 +791,6 @@ function createLevelChoose() {
     levelTable.append(levelContent);
 }
 
-$(document).ready(function () {
-    switch (currentLevel) {
-        case 1: //bình thường
-            reverseSnakeDir = false;
-            canThroughWall = true;
-            createMap();
-            createFood();
-            createTranscript();
-
-            break;
-        case 2: //có tường
-            mapSize += 1;
-            reverseSnakeDir = false;
-            canThroughWall = false;
-            createMap();
-            createWall();
-            createFood();
-            createTranscript();
-
-            break;
-        case 3: //có tường + đi ngược
-            mapSize += 1;
-            reverseSnakeDir = true;
-            canThroughWall = false;
-            createMap();
-            createWall();
-            createFood();
-            createTranscript();
-
-            break;
-        case 4: //có tường + địa hình
-            mapSize += 1;
-            reverseSnakeDir = false;
-            canThroughWall = true;
-            snakePos['row'] = mapSize - 5;
-            createMap();
-            // createWall();
-            createTerrain();
-            createFood();
-            createTranscript();
-
-            break;
-        case 5: //có tường + chướng ngại vật di chuyển
-            mapSize += 1;
-            reverseSnakeDir = false;
-            canThroughWall = false;
-            snakePos['row'] = mapSize - 5;
-            createMap();
-            createWall();
-            createObstacle();
-            createFood();
-            createTranscript();
-
-            break;
-        case 6: //có tường + mìn nổ
-            mapSize += 1;
-            reverseSnakeDir = false;
-            canThroughWall = true;
-            createMap();
-            createWall();
-            createFood();
-            createTranscript();
-
-            break;
-        default:
-            reverseSnakeDir = false;
-            canThroughWall = true;
-            createMap();
-            createFood();
-            createTranscript();
-
-            break;
-    }
-
-    createLevelChoose();
-
-    setTimeout(function () {
-        for (let i = 0; i < snakeLength; i++) {
-            currentDir = snakeDir['right'];
-            createSnake();
-        }
-        currentDir = 0;
-    }, 0);
-
-    snakeTimer = setInterval(function () {
-        if (currentDir != 0) {
-            createSnake();
-            isSnakeRunning = true;  
-        }
-    }, 100);
-});
 
 function setLevel(level) {
     if (level != currentLevel) {
@@ -779,14 +799,23 @@ function setLevel(level) {
     }
 }
 
-function onPause() {
+pauseButton.click(function () {
     if (currentDir == 0) {
+        $('.snake-sound')[0].play();
+        musicButton.html('<i class="fa-solid fa-music"></i>');
+        isMusicPlaying = true;
+        map.css({ 'opacity': '1' });
         currentDir = snakeDir['right'];
-        map.css({'opacity': '1'});
-        $('.pause-button').html('<b>II</b>');
+        pauseButton.html('<i class="fa-solid fa-pause"></i>');
+        pauseContent.html('Pause');
         isSnakeRunning = true;
-        $('.start-label').css({'display': 'none'})
-
+        $('.start-label').hide();
+        modeButton.attr('disabled', 'disabled');
+        modeButton.hover(function () {
+            $(this).css({ 'box-shadow': 'none' });
+        });
+        $('.mode').css({ 'opacity': '0.5' });
+        
         if (currentLevel == 5) {
             obstacleTimer = setInterval(function () {
                 moveObstacle();
@@ -802,44 +831,245 @@ function onPause() {
         clearInterval(snakeTimer);
         clearInterval(obstacleTimer);
         isSnakeRunning = false;
-        $('.pause-button').html('<b>&#9654;</b>');
-        map.css({'opacity': '0.5'});
+        pauseButton.html('<i class="fa-solid fa-play"></i>');
+        pauseContent.html('Resume');
+        map.css({ 'opacity': '0.5' });
     } else {
         snakeTimer = setInterval(function () {
             createSnake();
             isSnakeRunning = true;
         }, 100);
-        $('.pause-button').html('<b>II</b>');
-        map.css({'opacity': '1'});
-
+        pauseButton.html('<i class="fa-solid fa-pause"></i>');
+        pauseContent.html('Pause');
+        map.css({ 'opacity': '1' });
+        
         if (currentLevel == 5) {
             obstacleTimer = setInterval(function () {
                 moveObstacle();
             }, 200);
         }
-
+        
         if (currentLevel == 6) {
             mineTimer = setInterval(function () {
                 blastingMine();
             }, 100);
         }
     }
-}
+});
 
-function reload() {
+modeButton.click(function () {
+    if (mode == 'normal') {
+        modeButton.html('Infinite');
+        mode = 'infinite';
+        scoreArea.html(`<p><b>Score:</b></p>${snakePoint}`);
+    } else {
+        modeButton.html('Normal');
+        mode = 'normal';
+        scoreArea.html(`<p><b>Score:</b></p>${snakePoint}/30`);
+    }
+});
+
+reloadButton.click(function () {
     window.location.reload();
-}
+});
+
+nextButton.click(function () {
+    if (currentLevel == 6) {
+        localStorage.setItem('level', currentLevel = 1);
+    } else {
+        localStorage.setItem('level', currentLevel += 1);
+    }
+    window.location.reload();
+});
+
+soundButton.click(function () {
+    if (isSoundPlaying) {
+        soundButton.html('<i class="fa-solid fa-volume-xmark"></i>');
+    } else {
+        soundButton.html('<i class="fa-solid fa-volume-high"></i>');
+    }
+
+    isSoundPlaying = !isSoundPlaying;
+});
+
+musicButton.click(function () {
+    if (isMusicPlaying) {
+        musicButton.html('<i class="fa-solid fa-microphone-slash"></i>');
+        $('.snake-sound')[0].pause();
+    } else {
+        musicButton.html('<i class="fa-solid fa-music"></i>');
+        $('.snake-sound')[0].play();
+    }
+    isMusicPlaying = !isMusicPlaying;
+});
 
 function endGame() {
     clearInterval(snakeTimer);
     clearInterval(obstacleTimer);
+    if (isSoundPlaying) {
+        $('.lose-sound')[0].play();
+    }
     isSnakeRunning = false;
-    $('.pause-button').html('<b>II</b>');
-    map.css({'opacity': '0.5'});
-    $('.reload-button').css({'left': '720px', 'top': '220px'});
-    $('.pause-button').attr('disabled','disabled');
-    $('.pause-button').css({'opacity': '0.5'});
-    $('.pause-button').hover(function(){
-        $(this).css({'box-shadow': 'none'});
+    map.css({ 'opacity': '0.5' });
+    pauseButton.html('<b>II</b>');
+    $('.reload').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
+    pauseButton.attr('disabled', 'disabled');
+    $('.pause').css({ 'opacity': '0.5' });
+    pauseButton.hover(function () {
+        $(this).css({ 'box-shadow': 'none' });
     });
+    $('.lose-label').css({ 'display': 'block' });
+    $('.snake-sound')[0].pause();
 }
+
+function nextLevel() {
+    clearInterval(snakeTimer);
+    clearInterval(obstacleTimer);
+    if (isSoundPlaying) {
+        $('.won-sound')[0].play();
+    }
+    isSnakeRunning = false;
+    map.css({ 'opacity': '0.5' });
+    pauseButton.html('<b>II</b>');
+    $('.next').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
+    pauseButton.attr('disabled', 'disabled');
+    $('.pause').css({ 'opacity': '0.5' });
+    pauseButton.hover(function () {
+        $(this).css({ 'box-shadow': 'none' });
+    });
+    $('.won-label').css({ 'display': 'block' });
+}
+
+$(document).ready(function () {
+    switch (currentLevel) {
+        case 1: //bình thường
+            reverseSnakeDir = false;
+            canThroughWall = true;
+            createMap();
+            createFood();
+            createTranscript();
+
+            snakeTimer = setInterval(function () {
+                if (currentDir != 0) {
+                    createSnake();
+                    isSnakeRunning = true;
+                }
+            }, 90);
+
+            break;
+        case 2: //có tường
+            mapSize += 1;
+            reverseSnakeDir = false;
+            canThroughWall = false;
+            createMap();
+            createWall();
+            createFood();
+            createTranscript();
+
+            snakeTimer = setInterval(function () {
+                if (currentDir != 0) {
+                    createSnake();
+                    isSnakeRunning = true;
+                }
+            }, 100);
+
+            break;
+        case 3: //có tường + đi ngược
+            mapSize += 1;
+            reverseSnakeDir = true;
+            canThroughWall = false;
+            createMap();
+            createWall();
+            createFood();
+            createTranscript();
+
+            snakeTimer = setInterval(function () {
+                if (currentDir != 0) {
+                    createSnake();
+                    isSnakeRunning = true;
+                }
+            }, 100);
+
+            break;
+        case 4: //có tường + địa hình
+            mapSize += 1;
+            reverseSnakeDir = false;
+            canThroughWall = true;
+            snakePos['row'] = mapSize - 5;
+            createMap();
+            createWall();
+            createTerrain();
+            createFood();
+            createTranscript();
+
+            snakeTimer = setInterval(function () {
+                if (currentDir != 0) {
+                    createSnake();
+                    isSnakeRunning = true;
+                }
+            }, 100);
+
+            break;
+        case 5: //có tường + chướng ngại vật di chuyển
+            mapSize += 1;
+            reverseSnakeDir = false;
+            canThroughWall = false;
+            snakePos['row'] = mapSize - 5;
+            createMap();
+            createWall();
+            createObstacle();
+            createFood();
+            createTranscript();
+
+            snakeTimer = setInterval(function () {
+                if (currentDir != 0) {
+                    createSnake();
+                    isSnakeRunning = true;
+                }
+            }, 100);
+
+            break;
+        case 6: //có tường + mìn nổ
+            mapSize += 1;
+            reverseSnakeDir = false;
+            canThroughWall = true;
+            createMap();
+            createWall();
+            createFood();
+            createTranscript();
+
+            snakeTimer = setInterval(function () {
+                if (currentDir != 0) {
+                    createSnake();
+                    isSnakeRunning = true;
+                }
+            }, 100);
+
+            break;
+        default:
+            reverseSnakeDir = false;
+            canThroughWall = true;
+            createMap();
+            createFood();
+            createTranscript();
+
+            snakeTimer = setInterval(function () {
+                if (currentDir != 0) {
+                    createSnake();
+                    isSnakeRunning = true;
+                }
+            }, 100);
+
+            break;
+    }
+
+    createLevelChoose();
+
+    setTimeout(function () {
+        for (let i = 0; i < snakeLength; i++) {
+            currentDir = snakeDir['right'];
+            createSnake();
+        }
+        currentDir = 0;
+    }, 0);
+});
