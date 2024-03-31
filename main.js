@@ -222,8 +222,8 @@ function createSnake() {
 
     //kiểm tra điểm để qua màn
     if (mode == 'normal') {
-        if (snakePoint >= 30) {
-            nextLevel();
+        if (snakePoint >= 1) {
+            wonLevel();
             return;
         }
     }
@@ -700,7 +700,7 @@ function blastingMine() {
             }
         }
 
-        setTimeout(function () {
+        setTimeout(() => {
             for (let i = mineRow - 3; i <= mineRow + 3; i++) {
                 for (let j = mineCol - 3; j <= mineCol + 3; j++) {
                     if (i == mineRow - 3 || i == mineRow + 3) {
@@ -726,7 +726,7 @@ function blastingMine() {
             }
         }, 500);
 
-        setTimeout(function () {
+        setTimeout(() => {
             for (let i = mineRow - 4; i <= mineRow + 4; i++) {
                 for (let j = mineCol - 4; j <= mineCol + 4; j++) {
                     if (i == mineRow - 4 || i == mineRow + 4) {
@@ -935,17 +935,20 @@ function endGame() {
     isSnakeRunning = false;
     map.css({ 'opacity': '1', 'filter': 'blur(2px)'});
     pauseButton.html('<b>II</b>');
-    $('.reload').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
+    $('.reload').css({ 'position': 'absolute', 'margin': 'auto', 'top': '280px', 'left': '680px', 'right': '0', 'bottom': '0', 'transition': '0.2s' });
     pauseButton.attr('disabled', 'disabled');
     $('.pause').css({ 'opacity': '0.5' });
     pauseButton.hover(function () {
         $(this).css({ 'box-shadow': 'none' });
     });
     $('.lose-label').css({ 'display': 'block' });
-    snakeSoundElement.pause();
+
+    setTimeout(() => {
+        $('.reload').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
+    }, 0);
 }
 
-function nextLevel() {
+function wonLevel() {
     clearInterval(snakeTimer);
     clearInterval(obstacleTimer);
     clearInterval(mineTimer);
@@ -955,13 +958,17 @@ function nextLevel() {
     isSnakeRunning = false;
     map.css({ 'opacity': '0.5' });
     pauseButton.html('<b>II</b>');
-    $('.next').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
+    $('.next').css({ 'position': 'absolute', 'margin': 'auto', 'top': '400px', 'left': '680px', 'right': '0', 'bottom': '0', 'transition': '0.2s' });
     pauseButton.attr('disabled', 'disabled');
     $('.pause').css({ 'opacity': '0.5' });
     pauseButton.hover(function () {
         $(this).css({ 'box-shadow': 'none' });
     });
     $('.won-label').css({ 'display': 'block' });
+
+    setTimeout(() => {
+        $('.next').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
+    }, 0);
 }
 
 $(document).ready(function () {
@@ -1089,7 +1096,7 @@ $(document).ready(function () {
 
     createLevelChoose();
 
-    setTimeout(function () {
+    setTimeout(() => {
         for (let i = 0; i < snakeLength; i++) {
             currentDir = snakeDir['right'];
             createSnake();

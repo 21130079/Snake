@@ -10,38 +10,47 @@
 </head>
 <body>
     <table id="level"></table>
-    <table id="map"></table>
+
+    <div id="game">
+        <div id="left-map">
+            <div class="sound">
+                <button class="sound-button"><i class="fa-solid fa-volume-high"></i></button>
+                <p class="sound-content">Sound</p>
+            </div>
+        
+            <div class="music">
+                <button class="music-button"><i class="fa-solid fa-music"></i></button>
+                <p class="music-content">Music</p>
+            </div>
+        </div>
+        <table id="map"></table>
+        <div id="right-map">
+            <div class="pause">
+                <button class="pause-button"><i class="fa-solid fa-play"></i></button>
+                <p class="pause-content">Start</p>
+            </div>
+        
+            <div class="mode">
+                <button class="mode-button">Normal</button>
+                <p class="mode-content">Mode</p>
+            </div>
+        
+            <div class="reload">
+                <button class="reload-button"><i class="fa-solid fa-rotate-right"></i></button>
+                <p class="reload-content">Reload</p>
+            </div>
+        
+            <div class="next">
+                <button class="next-button"><i class="fa-solid fa-right-long"></i></button>
+                <p class="next-content">Next Level</p>
+            </div>
+        </div>
+    </div>
+    
     <table id="info"></table>
 
-    <div class="pause">
-        <button class="pause-button"><i class="fa-solid fa-play"></i></button>
-        <p class="pause-content">Start</p>
-    </div>
 
-    <div class="mode">
-        <button class="mode-button">Normal</button>
-        <p class="mode-content">Mode</p>
-    </div>
-
-    <div class="reload">
-        <button class="reload-button"><i class="fa-solid fa-rotate-right"></i></button>
-        <p class="reload-content">Reload</p>
-    </div>
-
-    <div class="next">
-        <button class="next-button"><i class="fa-solid fa-right-long"></i></button>
-        <p class="next-content">Next Level</p>
-    </div>
-
-    <div class="sound">
-        <button class="sound-button"><i class="fa-solid fa-volume-high"></i></button>
-        <p class="sound-content">Sound</p>
-    </div>
-
-    <div class="music">
-        <button class="music-button"><i class="fa-solid fa-music"></i></button>
-        <p class="music-content">Music</p>
-    </div>
+    
 
     <h1 class="start-label">Press Any Key To Start !</h1>
     <h1 class="won-label">You won !</h1>

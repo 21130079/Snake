@@ -70,57 +70,73 @@ html {
         transition: 0.2s;
         display: none;
     }
-    
-    #map {
-        width: 520px;
-        opacity: 0.5;
-        transition: 0.5s;
-        height: 520px;
-        border: 1px solid white;
-        background-image: url('./img/center-background.png');
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
 
-        &, td {
-            // border: 1px solid white;
-            border-collapse: collapse;
-        }
+    #game {
+        width: 832px;
+
+        #map {
+            width: 62.5%;
+            float: left;
+            opacity: 0.5;
+            transition: 0.5s;
+            height: 520px;
+            border: 1px solid white;
+            background-image: url('./img/center-background.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
     
-        .snake {
-            background-color: $snakeColor;
-        }
+            &, td {
+                // border: 1px solid white;
+                border-collapse: collapse;
+            }
         
-        .food {
-            background-color: $foodColor;
+            .snake {
+                background-color: $snakeColor;
+            }
+            
+            .food {
+                background-color: $foodColor;
+            }
+    
+            .special-food {
+                animation: foodBlinking 1s infinite;
+            }
+    
+            .snake-head {
+                background-color: $snakeHeadColor;
+            }
+    
+            .wall {
+                background-color: $wallColor;
+            }
+    
+            .obstacle {
+                background-color: $obstacleColor;
+            }
+    
+            .mine {
+                animation: mineBlinking 1s infinite;
+            }
+    
+            .smoke {
+                animation: smokeBlinking 0.5s infinite;
+            }
         }
 
-        .special-food {
-            animation: foodBlinking 1s infinite;
+        #left-map {
+            width: 18.75%;
+            float: left;
         }
 
-        .snake-head {
-            background-color: $snakeHeadColor;
-        }
-
-        .wall {
-            background-color: $wallColor;
-        }
-
-        .obstacle {
-            background-color: $obstacleColor;
-        }
-
-        .mine {
-            animation: mineBlinking 1s infinite;
-        }
-
-        .smoke {
-            animation: smokeBlinking 0.5s infinite;
+        #right-map {
+            width: 18.75%;
+            float: left;
         }
     }
 
     #info {
+        margin-left: 156px;
         width: 520px;
         height: 130px;
         border-collapse: collapse;
@@ -166,7 +182,6 @@ html {
                 .obstacle-content {
                     float: left;
                     width: 65%;
-                    // padding-left: 10%;
                     font-size: 15px;
                     line-height: 5px;
 
@@ -215,6 +230,7 @@ html {
         margin-top: -5px;
         margin-bottom: 5px;
         width: 520px;
+        margin-left: 156px;
 
         td {
             text-align: center;
@@ -238,9 +254,6 @@ html {
     }
     
     .pause {
-        position: absolute;
-        left: 1050px;
-        top: 40px;
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -269,9 +282,6 @@ html {
     }
 
     .mode {
-        position: absolute;
-        left: 1050px;
-        top: 170px;
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -300,9 +310,6 @@ html {
     }
 
     .reload {
-        position: absolute;
-        left: 1050px;
-        top: 300px;
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -331,9 +338,6 @@ html {
     }
 
     .next {
-        position: absolute;
-        left: 1050px;
-        top: 430px;
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -362,9 +366,6 @@ html {
     }
 
     .sound {
-        position: absolute;
-        left: 400px;
-        top: 40px;
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -393,9 +394,6 @@ html {
     }
 
     .music {
-        position: absolute;
-        left: 400px;
-        top: 170px;
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;

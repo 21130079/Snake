@@ -52,8 +52,12 @@ html .lose-label {
   transition: 0.2s;
   display: none;
 }
-html #map {
-  width: 520px;
+html #game {
+  width: 832px;
+}
+html #game #map {
+  width: 62.5%;
+  float: left;
   opacity: 0.5;
   transition: 0.5s;
   height: 520px;
@@ -63,34 +67,43 @@ html #map {
   background-repeat: no-repeat;
   background-size: cover;
 }
-html #map, html #map td {
+html #game #map, html #game #map td {
   border-collapse: collapse;
 }
-html #map .snake {
+html #game #map .snake {
   background-color: #6ad16e;
 }
-html #map .food {
+html #game #map .food {
   background-color: #d1ac7e;
 }
-html #map .special-food {
+html #game #map .special-food {
   animation: foodBlinking 1s infinite;
 }
-html #map .snake-head {
+html #game #map .snake-head {
   background-color: #1e522e;
 }
-html #map .wall {
+html #game #map .wall {
   background-color: #822b22;
 }
-html #map .obstacle {
+html #game #map .obstacle {
   background-color: #90993d;
 }
-html #map .mine {
+html #game #map .mine {
   animation: mineBlinking 1s infinite;
 }
-html #map .smoke {
+html #game #map .smoke {
   animation: smokeBlinking 0.5s infinite;
 }
+html #game #left-map {
+  width: 18.75%;
+  float: left;
+}
+html #game #right-map {
+  width: 18.75%;
+  float: left;
+}
 html #info {
+  margin-left: 156px;
   width: 520px;
   height: 130px;
   border-collapse: collapse;
@@ -168,6 +181,7 @@ html #level {
   margin-top: -5px;
   margin-bottom: 5px;
   width: 520px;
+  margin-left: 156px;
 }
 html #level td {
   text-align: center;
@@ -186,9 +200,6 @@ html #level td button:hover {
   box-shadow: 0 0 5px #39a832, 0 0 25px #39a832, 0 0 5px #39a832, 0 0 10px #39a832;
 }
 html .pause {
-  position: absolute;
-  left: 1050px;
-  top: 40px;
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
@@ -212,9 +223,6 @@ html .pause .pause-content {
   font-size: 20px;
 }
 html .mode {
-  position: absolute;
-  left: 1050px;
-  top: 170px;
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
@@ -238,9 +246,6 @@ html .mode .mode-content {
   font-size: 20px;
 }
 html .reload {
-  position: absolute;
-  left: 1050px;
-  top: 300px;
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
@@ -264,9 +269,6 @@ html .reload .reload-content {
   font-size: 20px;
 }
 html .next {
-  position: absolute;
-  left: 1050px;
-  top: 430px;
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
@@ -290,9 +292,6 @@ html .next .next-content {
   font-size: 20px;
 }
 html .sound {
-  position: absolute;
-  left: 400px;
-  top: 40px;
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
@@ -316,9 +315,6 @@ html .sound .sound-content {
   font-size: 20px;
 }
 html .music {
-  position: absolute;
-  left: 400px;
-  top: 170px;
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
