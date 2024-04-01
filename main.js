@@ -222,7 +222,7 @@ function createSnake() {
 
     //kiểm tra điểm để qua màn
     if (mode == 'normal') {
-        if (snakePoint >= 1) {
+        if (snakePoint >= 30) {
             wonLevel();
             return;
         }
@@ -670,6 +670,7 @@ function checkMineNotInFood(mineElement) {
 
 function blastingMine() {
     //tính thời gian game
+    let isSmokeTouchTail = false;
     time += 0.1;
     time = parseFloat(time.toFixed(2));
 
@@ -692,9 +693,19 @@ function blastingMine() {
             for (let j = mineCol - 3; j <= mineCol + 3; j++) {
                 if (i == mineRow - 3 || i == mineRow + 3) {
                     $(`.row-${i}-col-${j}`).addClass('smoke');
+                    
+                    //khói mìn chạm đuôi
+                    if ($(`.row-${i}-col-${j}`).hasClass('snake')) {
+                        isSmokeTouchTail = true;
+                    }
                 } else {
                     if (j == mineCol - 3 || j == mineCol + 3) {
                         $(`.row-${i}-col-${j}`).addClass('smoke');
+                    
+                        //khói mìn chạm đuôi
+                        if ($(`.row-${i}-col-${j}`).hasClass('snake')) {
+                            isSmokeTouchTail = true;
+                        }
                     }
                 }
             }
@@ -717,9 +728,19 @@ function blastingMine() {
                 for (let j = mineCol - 4; j <= mineCol + 4; j++) {
                     if (i == mineRow - 4 || i == mineRow + 4) {
                         $(`.row-${i}-col-${j}`).addClass('smoke');
+                    
+                        //khói mìn chạm đuôi
+                        if ($(`.row-${i}-col-${j}`).hasClass('snake')) {
+                            isSmokeTouchTail = true;
+                        }
                     } else {
                         if (j == mineCol - 4 || j == mineCol + 4) {
                             $(`.row-${i}-col-${j}`).addClass('smoke');
+                    
+                            //khói mìn chạm đuôi
+                            if ($(`.row-${i}-col-${j}`).hasClass('snake')) {
+                                isSmokeTouchTail = true;
+                            }
                         }
                     }
                 }
@@ -739,6 +760,10 @@ function blastingMine() {
                 }
             }
         }, 1000);
+    }
+
+    if (isSmokeTouchTail) {
+        endGame();
     }
 }
 

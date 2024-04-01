@@ -11,12 +11,20 @@
     background-color: red;
   }
   100% {
-    background-color: #2b3440;
+    opacity: 0;
+  }
+}
+@keyframes mineWallBlinking {
+  0% {
+    background-color: red;
+  }
+  100% {
+    background-color: #822b22;
   }
 }
 @keyframes smokeBlinking {
   0% {
-    background-color: #2b3440;
+    opacity: 0;
   }
   100% {
     background-color: #939393;
@@ -90,6 +98,12 @@ html #game #map .obstacle {
 }
 html #game #map .mine {
   animation: mineBlinking 1s infinite;
+}
+html #game #map .mine.snake {
+  background-color: #6ad16e;
+}
+html #game #map .mine.wall {
+  animation: mineWallBlinking 1s infinite;
 }
 html #game #map .smoke {
   animation: smokeBlinking 0.5s infinite;

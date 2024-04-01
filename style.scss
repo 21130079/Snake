@@ -1,4 +1,3 @@
-$gameBackgroundColor: #2b3440;
 $snakeColor: #6ad16e;
 $foodColor: #d1ac7e;
 $snakeHeadColor: #1e522e;
@@ -25,13 +24,23 @@ $buttonLevelColor: #39a832;
     }
     
     100% {
-        background-color: $gameBackgroundColor;
+        opacity: 0;
+    }
+}
+
+@keyframes mineWallBlinking {
+    0% {
+        background-color: red;
+    }
+    
+    100% {
+        background-color: $wallColor;
     }
 }
 
 @keyframes smokeBlinking {
     0% {
-        background-color: $gameBackgroundColor;
+        opacity: 0;
     }
 
     100% {
@@ -117,6 +126,14 @@ html {
     
             .mine {
                 animation: mineBlinking 1s infinite;
+            }
+
+            .mine.snake {
+                background-color: $snakeColor;
+            }
+
+            .mine.wall {
+                animation: mineWallBlinking 1s infinite;
             }
     
             .smoke {
