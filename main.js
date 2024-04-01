@@ -104,8 +104,9 @@ let mineSoundElement = $('.mine-sound')[0];
 let loseSoundElement = $('.lose-sound')[0];
 let wonSoundElement = $('.won-sound')[0];
 let eatSoundElement = $('.eat-sound')[0];
+let warningSoundElement = $('.warning-sound')[0];
 snakeSoundElement.volume = loseSoundElement.volume = 0.3;
-mineSoundElement.volume = wonSoundElement.volume = eatSoundElement.volume = 0.7;
+mineSoundElement.volume = warningSoundElement.volume = wonSoundElement.volume = eatSoundElement.volume = 0.7;
 
 function createMap() {
     // tạo hàng
@@ -649,6 +650,7 @@ function createMine() {
             }
         }
         mineRoundTime += 10;
+        warningSoundElement.play();
     } else {
         createMine();
     }
