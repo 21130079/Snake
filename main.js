@@ -260,7 +260,7 @@ function createSnake() {
 
     //kiểm tra điểm để qua màn
     if (mode == 'normal') {
-        if (snakePoint >= 30) {
+        if (snakePoint >= 20) {
             wonLevel();
             return;
         }
@@ -409,7 +409,7 @@ function updateFood() {
 
         //cập nhật bảng điểm
         if (mode == 'normal') {
-            scoreArea.html(`<p class="score-title"><b>Score:</b></p><p class="score-point">${snakePoint}/30</p>`);
+            scoreArea.html(`<p class="score-title"><b>Score:</b></p><p class="score-point">${snakePoint}/20</p>`);
         } else {
             scoreArea.html(`<p class="score-title"><b>Score:</b></p><p class="score-point">${snakePoint}</p>`);
         }
@@ -574,7 +574,7 @@ function createTranscript() {
     infoTable.append('<td id="score"></td>');
     scoreArea = $('#score');
     if (mode == 'normal') {
-        scoreArea.html(`<p class="score-title"><b>Score:</b></p><p class="score-point">${snakePoint}/30</p>`);
+        scoreArea.html(`<p class="score-title"><b>Score:</b></p><p class="score-point">${snakePoint}/20</p>`);
     } else {
         scoreArea.html(`<p class="score-title"><b>Score:</b></p><p class="score-point">${snakePoint}</p>`);
     }
@@ -961,6 +961,11 @@ pauseButton.click(function () {
     //thiết lập cho lần đầu chơi(chưa có dữ liệu cục bộ) 
     if (currentDir == 0) {
         isSnakeRunning = true;
+        
+        //phát nhạc khi chơi
+        if (isMusicPlaying) {
+            snakeSoundElement.play();
+        }
 
         //xóa hướng dẫn khi bắt đầu trò chơi
         $('.start-label').hide();
@@ -1049,7 +1054,7 @@ modeButton.click(function () {
     } else {
         modeButton.html('Normal');
         mode = 'normal';
-        scoreArea.html(`<p class="score-title"><b>Score:</b></p><p class="score-point">${snakePoint}/30</p>`);
+        scoreArea.html(`<p class="score-title"><b>Score:</b></p><p class="score-point">${snakePoint}/20</p>`);
     }
 });
 
