@@ -3,7 +3,8 @@ $wallColor: #822b22;
 $obstacleColor: #90993d;
 $smokeColor: #939393;
 $buttonClickColor: #6381af;
-$buttonLevelColor: #39a832;
+$chooseLevelColor: #5b77a2;
+$cancelBtnColor: #e74c3c;
 $font: bold 16px/2 cursive;
 $font-family: cursive;
 
@@ -48,8 +49,6 @@ $font-family: cursive;
 }
 
 html {
-    display: flex;
-    justify-content: center;
     align-items: center;
     font: $font;
     font-family: $font-family;
@@ -284,18 +283,24 @@ html {
                 font-weight: bold;
                 border: none;
                 color: white;
-                background-color: $buttonLevelColor;
+                background-color: $buttonClickColor;
 
                 &:hover {
-                    background-color: $buttonLevelColor;
-                    box-shadow: 0 0 5px $buttonLevelColor, 0 0 25px $buttonLevelColor, 0 0 5px $buttonLevelColor,
-                    0 0 10px $buttonLevelColor;
+                    background-color: $buttonClickColor;
+                    box-shadow: 0 0 5px $chooseLevelColor, 0 0 25px $chooseLevelColor, 0 0 5px $chooseLevelColor,
+                    0 0 10px $chooseLevelColor;
                 }
+            }
+
+            button.active {
+                background-color: $buttonClickColor;
+                box-shadow: 0 0 5px $buttonClickColor, 0 0 25px $buttonClickColor, 0 0 5px $buttonClickColor,
+                0 0 10px $buttonClickColor;
             }
         }
     }
     
-    .pause {
+    #pause {
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -308,6 +313,7 @@ html {
             color: white;
             border: none;
             background-color: $buttonClickColor;
+            cursor: pointer;
 
             &:hover {
                 background-color: $buttonClickColor;
@@ -323,7 +329,7 @@ html {
         }
     }
 
-    .mode {
+    #mode {
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -336,6 +342,7 @@ html {
             color: white;
             border: none;
             background-color: $buttonClickColor;
+            cursor: pointer;
 
             &:hover {
                 background-color: $buttonClickColor;
@@ -351,7 +358,7 @@ html {
         }
     }
 
-    .reload {
+    #reload {
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -364,6 +371,7 @@ html {
             color: white;
             border: none;
             background-color: $buttonClickColor;
+            cursor: pointer;
             
             &:hover {
                 background-color: $buttonClickColor;
@@ -379,7 +387,7 @@ html {
         }
     }
 
-    .next {
+    #next {
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -392,6 +400,7 @@ html {
             color: white;
             border: none;
             background-color: $buttonClickColor;
+            cursor: pointer;
 
             &:hover {
                 background-color: $buttonClickColor;
@@ -407,7 +416,7 @@ html {
         }
     }
 
-    .sound {
+    #sound {
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -420,6 +429,7 @@ html {
             color: white;
             border: none;
             background-color: $buttonClickColor;
+            cursor: pointer;
 
             &:hover {
                 background-color: $buttonClickColor;
@@ -435,7 +445,7 @@ html {
         }
     }
 
-    .music {
+    #music {
         text-align: center;
         vertical-align: middle;
         transition: 0.2s;
@@ -448,6 +458,7 @@ html {
             color: white;
             border: none;
             background-color: $buttonClickColor;
+            cursor: pointer;
 
             &:hover {
                 background-color: $buttonClickColor;
@@ -460,6 +471,71 @@ html {
             line-height: 0px;
             color: white;
             font-size: 20px;
+        }
+    }
+
+    #about-me {
+        text-align: center;
+        vertical-align: middle;
+        transition: 0.2s;
+        
+        .about-me-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 100px;
+            font-size: 40px;
+            color: white;
+            border: none;
+            background-color: $buttonClickColor;
+            cursor: pointer;
+
+            &:hover {
+                background-color: $buttonClickColor;
+                box-shadow: 0 0 5px $buttonClickColor, 0 0 25px $buttonClickColor, 0 0 5px $buttonClickColor,
+                0 0 10px $buttonClickColor;
+            }
+        }
+        
+        .about-me-content{
+            line-height: 0px;
+            color: white;
+            font-size: 20px;
+        }
+    }
+
+    #popup-container {
+        display: none;
+        position: absolute;
+        border-radius: 10px;
+        top: 305px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        background-color: $transcriptBackgroundColor;
+        width: 500px;
+        height: 500px;
+        z-index: 1;
+        animation: alternate;
+
+        .popup-content {
+            margin-left: 50px;
+            margin-top: 50px;
+            font-size: 21px;
+        }
+
+        .close-popup-btn {
+            position: absolute;
+            border: none;
+            border-radius: 8px;
+            background-color: $cancelBtnColor;
+            color: white;
+            cursor: pointer;
+            width: 100px;
+            height: 40px;
+            align-self: center;
+            top: 460px;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
     }
 }

@@ -56,7 +56,8 @@ let time = 0;
 let mineRow;
 let mineCol;
 let mineElement;
-let mineRoundTime = 5;
+let mineRoundTime = 3;
+let isMineTurn = true;
 
 //nút dừng
 let pauseButton = $('.pause-button');
@@ -98,7 +99,6 @@ snakeSoundElement.volume = loseSoundElement.volume = 0.3;
 mineSoundElement.volume = warningSoundElement.volume = wonSoundElement.volume = eatSoundElement.volume = 0.7;
 
 //dữ liệu cục bộ
-
 //cấp độ
 let currentLevel = parseInt(localStorage.getItem('level'));
 if (isNaN(currentLevel)) {
@@ -118,7 +118,14 @@ if (mode == 'normal') {
 
 //âm thanh
 let isSoundPlaying = localStorage.getItem('sound');
+if (isSoundPlaying == null) {
+    isSoundPlaying = 'true';
+}
+
 let isMusicPlaying = localStorage.getItem('music');
+if (isMusicPlaying == null) {
+    isMusicPlaying = 'true';
+}
 
 if (isSoundPlaying == 'true') {
     isSoundPlaying = true;
@@ -233,7 +240,9 @@ function createSnake() {
 
     //xóa đuôi khi quá kích thước
     snakeTailElement.removeClass(`snake snake-body-${snakeBody - snakeLength}`);
+    snakeTailElement.css({ 'transform': '' });
 
+    //đặt lớp cho thân của rắn
     snakePosElement.addClass(`snake snake-body-${snakeBody}`);
 
     //lấy đầu của rắn
@@ -279,10 +288,15 @@ function createSnake() {
 
 document.addEventListener('keydown', function (e) {
     //cài đặt cho cấp độ cho lần đầu chơi(chưa có dữ liệu cục bộ)
+    //phát nhạc khi bắt đầu chơi và không tắt nhạc
+    if (isMusicPlaying) {
+        snakeSoundElement.play();
+    }
+
     if (currentDir == 0) {
         currentDir = snakeDir['right'];
         pauseButton.html('<i class="fa-solid fa-pause"></i>');
-        
+
         //ẩn hướng dẫn khi ấn phím bất kỳ
         $('.start-label').hide();
 
@@ -291,23 +305,27 @@ document.addEventListener('keydown', function (e) {
         modeButton.hover(function () {
             $(this).css({ 'box-shadow': 'none' });
         });
-        $('.mode').css({ 'opacity': '0.5' });
-        
+        $('#mode').css({ 'opacity': '0.5' });
+
         //tạo chướng ngại vật di chuyển khi nó là cấp độ 5
         if (currentLevel == 5) {
             obstacleTimer = setInterval(function () {
                 moveObstacle();
             }, 200);
         }
-        
+
         //tạo mìn khi nó là cấp độ 6
         if (currentLevel == 6) {
+            obstacleTimer = setInterval(function () {
+                moveObstacle();
+            }, 200);
+
             mineTimer = setInterval(function () {
                 blastingMine();
             }, 100);
         }
     }
-    
+
     //đã di chuyển mới được đổi hướng
     if (isMoved) {
         if (reverseSnakeDir) {//di chuyển bị đảo ngược
@@ -357,7 +375,7 @@ function createFood() {
     foodElement = $(`.row-${foodRow}-col-${foodCol}`);
 
     //nếu thức ăn ở vị trí của tường hoặc của rắn thì tạo ngẫu nhiên lại
-    while (foodElement.hasClass('snake') || foodElement.hasClass('wall')) {
+    while (foodElement.hasClass('snake') || foodElement.hasClass('wall') || foodElement.hasClass('mine') || foodElement.hasClass('smoke')) {
         return createFood();
     }
 
@@ -603,7 +621,7 @@ function createObstacle() {
             $(`.row-${i}-col-${j}`).addClass('obstacle');
         }
     }
-    
+
     //tạo chướng ngại vật dưới theo cột bắt đầu và cột kết thúc
     for (let i = bottomObstacleStartRow; i <= bottomObstacleEndRow; i++) {
         for (let j = bottomObstacleStartCol; j <= bottomObstacleEndCol; j++) {
@@ -716,7 +734,7 @@ function createMine() {
                 $(`.row-${i}-col-${j}`).addClass('mine');
             }
         }
-        mineRoundTime += 10;
+        mineRoundTime += 8;
         warningSoundElement.play();
     } else {
         createMine();
@@ -744,13 +762,15 @@ function blastingMine() {
     time += 0.1;
     time = parseFloat(time.toFixed(2));
 
-    if (time % 5 == 0 && time == mineRoundTime) {
+    if (time == mineRoundTime && isMineTurn) {
         createMine();
+        isMineTurn = !isMineTurn;
     }
 
-    if (time % 10 == 0) {
+    if (time == mineRoundTime - 3 && !isMineTurn) {
+        isMineTurn = !isMineTurn;
         mineSoundElement.play();
-        //xóa lớp mìn đi thêm với tường trong phạm vi 2 ô xung quanh
+        //xóa lớp mìn đi thêm tường vào trong phạm vi 2 ô xung quanh
         for (let i = mineRow - 2; i <= mineRow + 2; i++) {
             for (let j = mineCol - 2; j <= mineCol + 2; j++) {
                 $(`.row-${i}-col-${j}`).addClass('wall');
@@ -830,6 +850,7 @@ function blastingMine() {
                             $(`.row-${i}-col-${j}`).removeClass('smoke');
                         }
                     }
+                    console.log(i, j)
                 }
             }
         }, 1000);
@@ -842,7 +863,7 @@ function createTerrain() {
 
     //chia bản đồ thành 5 đoạn
     let terrainCornerSize = parseInt(mapSize / 5);
-    
+
     //chia bản đồ thành 2 đoạn
     let terrainCenterSize = parseInt(mapSize / 2);
 
@@ -920,14 +941,19 @@ function createTerrain() {
 //tạo khung chọn cấp độ
 function createLevelChoose() {
     let levelTable = $('#level');
-    let levelContent = '<td><button onclick="setLevel(1)">Level 1</button></td>';
-    levelContent += '<td><button onclick="setLevel(2)">Level 2</button></td>';
-    levelContent += '<td><button onclick="setLevel(3)">Level 3</button></td>';
-    levelContent += '<td><button onclick="setLevel(4)">Level 4</button></td>';
-    levelContent += '<td><button onclick="setLevel(5)">Level 5</button></td>';
-    levelContent += '<td><button onclick="setLevel(6)">Level 6</button></td>';
+    let levelContent = '<td><button id="level-1" onclick="setLevel(1)">Level 1</button></td>';
+    levelContent += '<td><button id="level-2" onclick="setLevel(2)">Level 2</button></td>';
+    levelContent += '<td><button id="level-3" onclick="setLevel(3)">Level 3</button></td>';
+    levelContent += '<td><button id="level-4" onclick="setLevel(4)">Level 4</button></td>';
+    levelContent += '<td><button id="level-5" onclick="setLevel(5)">Level 5</button></td>';
+    levelContent += '<td><button id="level-6" onclick="setLevel(6)">Level 6</button></td>';
 
     levelTable.append(levelContent);
+}
+
+//hiệu ứng cho nút cấp độ
+function activeLevelButton() {
+    $(`#level-${currentLevel}`).addClass('active');
 }
 
 //nút tạm dừng
@@ -938,7 +964,7 @@ pauseButton.click(function () {
 
         //xóa hướng dẫn khi bắt đầu trò chơi
         $('.start-label').hide();
-        
+
         //hiệu ứng khi bắt đầu trò chơi
         map.css({ 'opacity': '1' });
         currentDir = snakeDir['right'];
@@ -952,7 +978,7 @@ pauseButton.click(function () {
         modeButton.hover(function () {
             $(this).css({ 'box-shadow': 'none' });
         });
-        $('.mode').css({ 'opacity': '0.5' });
+        $('#mode').css({ 'opacity': '0.5' });
 
         //tạm dừng chướng ngại vật di chuyển nếu là cấp độ 5
         if (currentLevel == 5) {
@@ -963,6 +989,10 @@ pauseButton.click(function () {
 
         //tạm dừng thả mìn khi là cấp độ 6
         if (currentLevel == 6) {
+            obstacleTimer = setInterval(function () {
+                moveObstacle();
+            }, 200);
+
             mineTimer = setInterval(function () {
                 blastingMine();
             }, 100);
@@ -986,11 +1016,11 @@ pauseButton.click(function () {
             createSnake();
             isSnakeRunning = true;
         }, 100);
-        
+
         //chỉnh nút tạm dừng
         pauseButton.html('<i class="fa-solid fa-pause"></i>');
         pauseContent.html('Pause');
-        
+
         //hiệu ứng cho bản đồ khi tiếp tục
         map.css({ 'filter': 'none' });
 
@@ -1061,6 +1091,11 @@ musicButton.click(function () {
     isMusicPlaying = !isMusicPlaying;
 });
 
+//ẩn & hiện thông tin tác giả
+function toggleAboutMePopup() {
+    $('#popup-container').toggle();
+}
+
 //kết thúc cấp độ hiện tại
 function endGame() {
     //dừng mọi vật đang chuyển động
@@ -1068,7 +1103,7 @@ function endGame() {
     clearInterval(obstacleTimer);
     clearInterval(mineTimer);
     isSnakeRunning = false;
-    
+
     //hiệu ứng cho bản đồ
     map.css({ 'opacity': '1', 'filter': 'blur(2px)' });
     if (isSoundPlaying) {
@@ -1078,16 +1113,18 @@ function endGame() {
     //chỉnh và hiệu ứng cho nút tạm dừng
     pauseButton.html('<i class="fa-solid fa-play"></i>');
     pauseButton.attr('disabled', 'disabled');
-    $('.pause').css({ 'opacity': '0.5' });
+    $('#pause').css({ 'opacity': '0.5' });
     pauseButton.hover(function () {
         $(this).css({ 'box-shadow': 'none' });
     });
-    
+
     //hiệu ứng cho kết thúc cấp độ
     $('.lose-label').css({ 'display': 'block' });
-    $('.reload').css({ 'position': 'absolute', 'margin': 'auto', 'top': '280px', 'left': '680px', 'right': '0', 'bottom': '0', 'transition': '0.2s' });
+    $('.reload-button').css({ 'position': 'absolute', 'margin': 'auto', 'top': '280px', 'left': '680px', 'right': '0', 'bottom': '0', 'transition': '0.2s' });
+    $('.reload-content').css({ 'position': 'absolute', 'margin': 'auto', 'top': '280px', 'left': '680px', 'right': '0', 'bottom': '0', 'transition': '0.2s' });
     setTimeout(() => {
-        $('.reload').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
+        $('.reload-button').css({ 'margin': 'auto', 'top': '-160px', 'left': '0', 'right': '0', 'bottom': '0' });
+        $('.reload-content').css({ 'margin': 'auto', 'top': '330px', 'left': '0', 'right': '0', 'bottom': '0' });
     }, 0);
 }
 
@@ -1098,26 +1135,28 @@ function wonLevel() {
     clearInterval(obstacleTimer);
     clearInterval(mineTimer);
     isSnakeRunning = false;
-    
+
     //hiệu ứng cho bản đồ
     map.css({ 'opacity': '1', 'filter': 'blur(2px)' });
     if (isSoundPlaying) {
         wonSoundElement.play();
     }
-    
+
     //chỉnh và hiệu ứng cho nút tạm dừng
     pauseButton.html('<i class="fa-solid fa-play"></i>');
     pauseButton.attr('disabled', 'disabled');
-    $('.pause').css({ 'opacity': '0.5' });
+    $('#pause').css({ 'opacity': '0.5' });
     pauseButton.hover(function () {
         $(this).css({ 'box-shadow': 'none' });
     });
-    
+
     //hiệu ứng cho chiến thắng cấp độ
     $('.won-label').css({ 'display': 'block' });
-    $('.next').css({ 'position': 'absolute', 'margin': 'auto', 'top': '400px', 'left': '680px', 'right': '0', 'bottom': '0', 'transition': '0.2s' });
+    $('.next-button').css({ 'position': 'absolute', 'margin': 'auto', 'top': '400px', 'left': '680px', 'right': '0', 'bottom': '0', 'transition': '0.2s' });
+    $('.next-content').css({ 'position': 'absolute', 'margin': 'auto', 'top': '400px', 'left': '680px', 'right': '0', 'bottom': '0', 'transition': '0.2s' });
     setTimeout(() => {
-        $('.next').css({ 'margin': 'auto', 'top': '240px', 'left': '0', 'right': '0', 'bottom': '0' });
+        $('.next-button').css({ 'margin': 'auto', 'top': '-160px', 'left': '0', 'right': '0', 'bottom': '0' });
+        $('.next-content').css({ 'margin': 'auto', 'top': '330px', 'left': '0', 'right': '0', 'bottom': '0' });
     }, 0);
 }
 
@@ -1210,7 +1249,6 @@ $(document).ready(function () {
             mapSize += 1;
             reverseSnakeDir = false;
             canThroughWall = false;
-            snakePos['row'] = mapSize - 5;
             createMap();
             createWall();
             createObstacle();
@@ -1225,12 +1263,13 @@ $(document).ready(function () {
             }, 100);
 
             break;
-        case 6: //có tường + mìn nổ
+        case 6: //có tường + chướng ngại vật di chuyển + mìn nổ
             mapSize += 1;
             reverseSnakeDir = false;
             canThroughWall = true;
             createMap();
             createWall();
+            createObstacle();
             createFood();
             createTranscript();
 
@@ -1245,6 +1284,7 @@ $(document).ready(function () {
     }
 
     createLevelChoose();
+    activeLevelButton()
 
     setTimeout(() => {
         for (let i = 0; i < snakeLength; i++) {

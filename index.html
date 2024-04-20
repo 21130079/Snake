@@ -4,43 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake</title>
+    <link rel="icon" type="image/x-icon" href="./img/logo.png">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
     <table id="level"></table>
 
     <div id="game">
         <div id="left-map">
-            <div class="sound">
+            <div id="sound">
                 <button class="sound-button"><i class="fa-solid fa-volume-high"></i></button>
                 <p class="content sound-content">Sound</p>
             </div>
         
-            <div class="music">
+            <div id="music">
                 <button class="music-button"><i class="fa-solid fa-music"></i></button>
                 <p class="content music-content">Music</p>
+            </div>
+            
+            <div id="about-me">
+                <button class="about-me-button" onclick="toggleAboutMePopup()"><i class="fa-solid fa-address-card"></i></button>
+                <p class="content about-me-content">About Me</p>
+            </div>
+
+            <div id="popup-container">
+                <div class="popup-content">
+                    <p>Full Name: Nguyen Tan Khoa</p>
+                    <p>Student ID: 21130079</p>
+                    <p>Class: DH21DTA</p>
+                    <p>DOB: August 26, 2003</p>
+                    <p>Home Town: Ho Chi Minh City</p>
+                    <p>Supporting Lecturer: Phan Dinh Long, M.S.</p>
+                </div>
+                <button class="close-popup-btn" onclick="toggleAboutMePopup()">Close</button>
             </div>
         </div>
         <table id="map"></table>
         <div id="right-map">
-            <div class="pause">
+            <div id="pause">
                 <button class="pause-button"><i class="fa-solid fa-play"></i></button>
                 <p class="content pause-content">Start</p>
             </div>
         
-            <div class="mode">
+            <div id="mode">
                 <button class="mode-button">Normal</button>
                 <p class="content mode-content">Mode</p>
             </div>
         
-            <div class="reload">
+            <div id="reload">
                 <button class="reload-button"><i class="fa-solid fa-rotate-right"></i></button>
                 <p class="content reload-content">Reload</p>
             </div>
         
-            <div class="next">
+            <div id="next">
                 <button class="next-button"><i class="fa-solid fa-right-long"></i></button>
                 <p class="content next-content">Next Level</p>
             </div>

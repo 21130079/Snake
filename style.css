@@ -31,8 +31,6 @@
   }
 }
 html {
-  display: flex;
-  justify-content: center;
   align-items: center;
   font: bold 16px/2 cursive;
   font-family: cursive;
@@ -231,18 +229,22 @@ html #level td button {
   font-weight: bold;
   border: none;
   color: white;
-  background-color: #39a832;
+  background-color: #6381af;
 }
 html #level td button:hover {
-  background-color: #39a832;
-  box-shadow: 0 0 5px #39a832, 0 0 25px #39a832, 0 0 5px #39a832, 0 0 10px #39a832;
+  background-color: #6381af;
+  box-shadow: 0 0 5px #5b77a2, 0 0 25px #5b77a2, 0 0 5px #5b77a2, 0 0 10px #5b77a2;
 }
-html .pause {
+html #level td button.active {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html #pause {
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
 }
-html .pause .pause-button {
+html #pause .pause-button {
   width: 80px;
   height: 80px;
   border-radius: 100px;
@@ -250,22 +252,23 @@ html .pause .pause-button {
   color: white;
   border: none;
   background-color: #6381af;
+  cursor: pointer;
 }
-html .pause .pause-button:hover {
+html #pause .pause-button:hover {
   background-color: #6381af;
   box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
 }
-html .pause .pause-content {
+html #pause .pause-content {
   line-height: 0px;
   color: white;
   font-size: 20px;
 }
-html .mode {
+html #mode {
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
 }
-html .mode .mode-button {
+html #mode .mode-button {
   width: 80px;
   height: 80px;
   border-radius: 100px;
@@ -273,45 +276,23 @@ html .mode .mode-button {
   color: white;
   border: none;
   background-color: #6381af;
+  cursor: pointer;
 }
-html .mode .mode-button:hover {
+html #mode .mode-button:hover {
   background-color: #6381af;
   box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
 }
-html .mode .mode-content {
+html #mode .mode-content {
   line-height: 0px;
   color: white;
   font-size: 20px;
 }
-html .reload {
+html #reload {
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
 }
-html .reload .reload-button {
-  width: 80px;
-  height: 80px;
-  border-radius: 100px;
-  font-size: 40px;
-  color: white;
-  border: none;
-  background-color: #6381af;
-}
-html .reload .reload-button:hover {
-  background-color: #6381af;
-  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
-}
-html .reload .reload-content {
-  line-height: 0px;
-  color: white;
-  font-size: 20px;
-}
-html .next {
-  text-align: center;
-  vertical-align: middle;
-  transition: 0.2s;
-}
-html .next .next-button {
+html #reload .reload-button {
   width: 80px;
   height: 80px;
   border-radius: 100px;
@@ -319,22 +300,23 @@ html .next .next-button {
   color: white;
   border: none;
   background-color: #6381af;
+  cursor: pointer;
 }
-html .next .next-button:hover {
+html #reload .reload-button:hover {
   background-color: #6381af;
   box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
 }
-html .next .next-content {
+html #reload .reload-content {
   line-height: 0px;
   color: white;
   font-size: 20px;
 }
-html .sound {
+html #next {
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
 }
-html .sound .sound-button {
+html #next .next-button {
   width: 80px;
   height: 80px;
   border-radius: 100px;
@@ -342,22 +324,23 @@ html .sound .sound-button {
   color: white;
   border: none;
   background-color: #6381af;
+  cursor: pointer;
 }
-html .sound .sound-button:hover {
+html #next .next-button:hover {
   background-color: #6381af;
   box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
 }
-html .sound .sound-content {
+html #next .next-content {
   line-height: 0px;
   color: white;
   font-size: 20px;
 }
-html .music {
+html #sound {
   text-align: center;
   vertical-align: middle;
   transition: 0.2s;
 }
-html .music .music-button {
+html #sound .sound-button {
   width: 80px;
   height: 80px;
   border-radius: 100px;
@@ -365,13 +348,95 @@ html .music .music-button {
   color: white;
   border: none;
   background-color: #6381af;
+  cursor: pointer;
 }
-html .music .music-button:hover {
+html #sound .sound-button:hover {
   background-color: #6381af;
   box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
 }
-html .music .music-content {
+html #sound .sound-content {
   line-height: 0px;
   color: white;
   font-size: 20px;
+}
+html #music {
+  text-align: center;
+  vertical-align: middle;
+  transition: 0.2s;
+}
+html #music .music-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 40px;
+  color: white;
+  border: none;
+  background-color: #6381af;
+  cursor: pointer;
+}
+html #music .music-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html #music .music-content {
+  line-height: 0px;
+  color: white;
+  font-size: 20px;
+}
+html #about-me {
+  text-align: center;
+  vertical-align: middle;
+  transition: 0.2s;
+}
+html #about-me .about-me-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  font-size: 40px;
+  color: white;
+  border: none;
+  background-color: #6381af;
+  cursor: pointer;
+}
+html #about-me .about-me-button:hover {
+  background-color: #6381af;
+  box-shadow: 0 0 5px #6381af, 0 0 25px #6381af, 0 0 5px #6381af, 0 0 10px #6381af;
+}
+html #about-me .about-me-content {
+  line-height: 0px;
+  color: white;
+  font-size: 20px;
+}
+html #popup-container {
+  display: none;
+  position: absolute;
+  border-radius: 10px;
+  top: 305px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  background-color: #1c2128;
+  width: 500px;
+  height: 500px;
+  z-index: 1;
+  animation: alternate;
+}
+html #popup-container .popup-content {
+  margin-left: 50px;
+  margin-top: 50px;
+  font-size: 21px;
+}
+html #popup-container .close-popup-btn {
+  position: absolute;
+  border: none;
+  border-radius: 8px;
+  background-color: #e74c3c;
+  color: white;
+  cursor: pointer;
+  width: 100px;
+  height: 40px;
+  align-self: center;
+  top: 460px;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }/*# sourceMappingURL=style.css.map */
